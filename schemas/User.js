@@ -1,10 +1,16 @@
 const mongoose = require("mongoose")
+const ObjectId = mongoose.Types.ObjectId
 
 
 var UserSchema = mongoose.Schema({
     password: {
         type: String,
-     
+        required: true
+    },
+    userName: {
+        type: String,
+        index: true,
+        unique: true,
         required: true
     },
     firstName: {
@@ -15,19 +21,16 @@ var UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    username: {
-        type: String,
-        index: true,
-        unique: true,
-        required: true
-    },
     email: {
         type: String,
         index: true,
         unique: true,
         required: true
     },
-    phone: String
+    password: {
+        type: String,
+        required: true
+    },
         
 })
 
