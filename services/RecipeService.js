@@ -8,21 +8,11 @@ var Recipe = mongoose.model('Recipe', RecipeSchema)
 
 Recipe.createIndexes()
 
-const ArticleSchema = require('../schemas/Article')
-const _ = require('lodash')
-const async = require('async')
-const mongoose = require('mongoose')
-const ObjectId = mongoose.Types.ObjectId
-
-var Article = mongoose.model('Article', ArticleSchema)
-
-Article.createIndexes()
-
-module.exports.addOneArticle = async function (article, options, callback) {
+module.exports.addOneRecipe = async function (recipe, options, callback) {
     try {
-        article.user_id = options && options.user ? options.user._id: article.user_id
-        var new_article = new Article(article);
-        var errors = new_article.validateSync();
+        recipe.user_id = options && options.user ? options.user._id: recipe.user_id
+        var new_recipe = new Recipe(recipe);
+        var errors = new_recipe.validateSync();
         if (errors) {
             errors = errors['errors'];
             var text = Object.keys(errors).map((e) => {
@@ -39,8 +29,8 @@ module.exports.addOneArticle = async function (article, options, callback) {
             };
             callback(err);
         } else {
-            await new_article.save();
-            callback(null, new_article.toObject());
+            await new_recipe.save();
+            callback(null, new_recipe.toObject());
         }
     } catch (error) {
         if (error.code === 11000) { // Erreur de duplicité
@@ -58,68 +48,17 @@ module.exports.addOneArticle = async function (article, options, callback) {
     }
 };
 
-module.exports.addManyArticles = async function (articles, options, callback) {
-    var errors = [];
 
-    // Vérifier les erreurs de validation
-    for (var i = 0; i < articles.length; i++) {
-        var article = articles[i];
-        var new_article = new Article(article);
-        var error = new_article.validateSync();
-        if (error) {
-            error = error['errors'];
-            var text = Object.keys(error).map((e) => {
-                return error[e]['properties']['message'];
-            }).join(' ');
-            var fields = _.transform(Object.keys(error), function (result, value) {
-                result[value] = error[value]['properties']['message'];
-            }, {});
-            errors.push({
-                msg: text,
-                fields_with_error: Object.keys(error),
-                fields: fields,
-                index: i,
-                type_error: "validator"
-            });
-        }
-    }
-    if (errors.length > 0) {
-        callback(errors);
-    } else {
-        try {
-            // Tenter d'insérer les utilisateurs
-            const data = await Article.insertMany(articles, { ordered: false });
-            callback(null, data);
-        } catch (error) {
-            if (error.code === 11000) { // Erreur de duplicité
-                const duplicateErrors = error.writeErrors.map(err => {
-                    //const field = Object.keys(err.keyValue)[0];
-                    const field = err.err.errmsg.split(" dup key: { ")[1].split(':')[0].trim();
-                    return {
-                        msg: `Duplicate key error: ${field} must be unique.`,
-                        fields_with_error: [field],
-                        fields: { [field]: `The ${field} is already taken.` },
-                        index: err.index,
-                        type_error: "duplicate"
-                    };
-                });
-                callback(duplicateErrors);
-            } else {
-                callback(error); // Autres erreurs
-            }
-        }
-    }
-};
 
-module.exports.findOneArticleById = function (article_id, options, callback) {
+module.exports.findOneRecipeById = function (recipe_id, options, callback) {
     var opts ={populate: options && options.populate ? ["user_id"] : []}
-    if (article_id && mongoose.isValidObjectId(article_id)) {
-        Article.findById(article_id, null, opts).then((value) => {
+    if (recipe_id && mongoose.isValidObjectId(recipe_id)) {
+        Recipe.findById(recipe_id, null, opts).then((value) => {
             try {
                 if (value) {
                     callback(null, value.toObject());
                 } else {
-                    callback({ msg: "Aucun article trouvé.", type_error: "no-found" });
+                    callback({ msg: "Aucune recette trouvée.", type_error: "no-found" });
                 }
             }
             catch (e) {
@@ -133,7 +72,7 @@ module.exports.findOneArticleById = function (article_id, options, callback) {
     }
 }
 
-module.exports.findManyArticlesById = function (articles_id, options, callback) {
+/* module.exports.findManyArticlesById = function (articles_id, options, callback) {
     var opts = {populate: (options && options.populate ? ["user_id"] : []), lean: true}
     if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == articles_id.length) {
         articles_id = articles_id.map((e) => { return new ObjectId(e) })
@@ -161,9 +100,9 @@ module.exports.findManyArticlesById = function (articles_id, options, callback) 
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-}
+} */
 
-module.exports.findOneArticle = function (tab_field, value, options, callback) {
+module.exports.findOneRecipe = function (tab_field, value, options, callback) {
     var field_unique = ['name', 'description', 'price', 'quantity']
     var opts = {populate: options && options.populate ? ["user_id"] : []}
 
@@ -172,7 +111,7 @@ module.exports.findOneArticle = function (tab_field, value, options, callback) {
         _.forEach(tab_field, (e) => {
             obj_find.push({[e]: value})
         })
-        Article.findOne({ $or: obj_find}, null, opts).then((value) => {
+        Recipe.findOne({ $or: obj_find}, null, opts).then((value) => {
             if (value){
                 callback(null, value.toObject())
             }else {
@@ -202,7 +141,7 @@ module.exports.findOneArticle = function (tab_field, value, options, callback) {
     }
 }
 
-module.exports.findManyArticles = function(search, limit, page, options, callback) {
+/* module.exports.findManyArticles = function(search, limit, page, options, callback) {
     page = !page ? 1 : parseInt(page)
     limit = !limit ? 10 : parseInt(limit)
     var populate = options && options.populate ? ['user_id']: []
@@ -226,12 +165,12 @@ module.exports.findManyArticles = function(search, limit, page, options, callbac
             callback(e)
         })
     }
-}
+} */
 
-module.exports.updateOneArticle = function (article_id, update, options, callback) {
+module.exports.updateOneRecipe = function (recipe_id, update, options, callback) {
     update.updated_at = new Date()
-    if (article_id && mongoose.isValidObjectId(article_id)) {
-        Article.findByIdAndUpdate(new ObjectId(article_id), update, { returnDocument: 'after', runValidators: true }).then((value) => {
+    if (recipe_id && mongoose.isValidObjectId(recipe_id)) {
+        Recipe.findByIdAndUpdate(new ObjectId(recipe_id), update, { returnDocument: 'after', runValidators: true }).then((value) => {
             try {
                 // callback(null, value.toObject())
                 if (value)
@@ -274,7 +213,7 @@ module.exports.updateOneArticle = function (article_id, update, options, callbac
     }
 }
 
-module.exports.updateManyArticles = function (articles_id, update, options, callback) {
+/* module.exports.updateManyArticles = function (articles_id, update, options, callback) {
     // 
     if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == articles_id.length) {
         articles_id = articles_id.map((e) => { return new ObjectId(e) })
@@ -322,11 +261,11 @@ module.exports.updateManyArticles = function (articles_id, update, options, call
     else {
         callback({ msg: "Id invalide.", type_error: 'no-valid' })
     }
-}
+} */
 
-module.exports.deleteOneArticle = function (article_id, options, callback) {
-    if (article_id && mongoose.isValidObjectId(article_id)) {
-        Article.findByIdAndDelete(article_id).then((value) => {
+module.exports.deleteOneRecipe = function (recipe_id, options, callback) {
+    if (recipe_id && mongoose.isValidObjectId(recipe_id)) {
+        Recipe.findByIdAndDelete(recipe_id).then((value) => {
             try {
                 if (value)
                     callback(null, value.toObject())
@@ -346,7 +285,7 @@ module.exports.deleteOneArticle = function (article_id, options, callback) {
     }
 }
 
-module.exports.deleteManyArticles = function (articles_id, options, callback) {
+/* module.exports.deleteManyArticles = function (articles_id, options, callback) {
     if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == articles_id.length) {
         articles_id = articles_id.map((e) => { return new ObjectId(e) })
         Article.deleteMany({ _id: articles_id }).then((value) => {
@@ -365,4 +304,4 @@ module.exports.deleteManyArticles = function (articles_id, options, callback) {
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-}
+} */
