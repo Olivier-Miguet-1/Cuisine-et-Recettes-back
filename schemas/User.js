@@ -3,9 +3,9 @@ const ObjectId = mongoose.Types.ObjectId
 
 
 var UserSchema = mongoose.Schema({
-    password: {
-        type: String,
-        required: true
+    _id: {
+        type: ObjectId,
+        required: true,
     },
     userName: {
         type: String,
