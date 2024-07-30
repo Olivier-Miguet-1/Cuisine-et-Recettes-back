@@ -1,38 +1,38 @@
-const ArticleService = require('../../services/ArticleService')
+const RecipeService = require('../../services/RecipeService')
 const UserService = require('../../services/UserService')
 const chai = require('chai');
 let expect = chai.expect;
 const _ = require('lodash')
-var id_article_valid = ""
-var tab_id_articles = []
+var id_recipe_valid = ""
+var tab_id_recipes = []
 var tab_id_users = []
-var articles = []
+var recipes = []
 
 var tab_id_users =[]
 let users = [
     {
-        firstName: "Détenteur d'article 1",
+        firstName: "Détenteur de recette 1",
         lastName: "Iencli",
         username: "oui1",
         email:"iencli1@gmail.com",
             password: "12345"
     },
     {
-        firstName: "Détenteur d'article 2",
+        firstName: "Détenteur de recette 2",
         lastName: "Iencli",
         username: "oui2",
         email:"iencli2@gmail.com",
             password: "12345"
     },
     {
-        firstName: "Détenteur d'article 3",
+        firstName: "Détenteur de recette 3",
         lastName: "Iencli",
         username: "oui3",
         email:"iencli3@gmail.com",
             password: "12345"
     },
     {
-        firstName: "Détenteur d'article 4",
+        firstName: "Détenteur de recette 4",
         lastName: "Iencli",
         username: "oui4",
         email:"iencli4@gmail.com",
@@ -52,32 +52,32 @@ function rdm_user (tab) {
     return rdm_id
 }
 
-describe("addOneArticle", (done) => {
-    it("Article correct. - S", () => {
-        var article = {
+describe("addOneRecipe", (done) => {
+    it("Recette correcte. - S", () => {
+        var recipe = {
             name: "test",
             description: "ceci est une description",
-            price: 40,
+            price: 10,
             quantity: 120,
             user_id: rdm_user(tab_id_users)
         }    
-        ArticleService.addOneArticle(article,null, function (err, value) {
+        RecipeService.addOneRecipe(recipe,null, function (err, value) {
             expect(value).to.be.a('object');
             expect(value).to.haveOwnProperty('_id')
             expect(value).to.haveOwnProperty('user_id')
-            id_article_valid = value._id
-            articles.push(value)
+            id_recipe_valid = value._id
+            recipes.push(value)
             done()
         })
     })
-    it("Article incorrect. (Sans name) - E", (done) => {
-        var article_no_valid = {
+    it("Recette incorrecte. (Sans name) - E", (done) => {
+        var recipe_no_valid = {
             description: "ceci est une description",
-            price: 10,
+            price: 11,
             quantity: 80,
             user_id: rdm_user(tab_id_users)
         }
-        ArticleService.addOneArticle(article_no_valid,null, function (err, value) {
+        RecipeService.addOneRecipe(recipe_no_valid,null, function (err, value) {
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('fields_with_error').with.lengthOf(1)
             expect(err).to.haveOwnProperty('fields')
@@ -88,9 +88,9 @@ describe("addOneArticle", (done) => {
     })
 })
 
-describe("addManyArticles", () => {
-    it("Articles à ajouter, valide. - S", (done) => {
-        var articles_tab = [{
+describe("addManyRecipes", () => {
+    it("Recettes à ajouter, valide. - S", (done) => {
+        var recipes_tab = [{
             name: "fourchette",
             description: "ceci est une description",
             price: 20,
@@ -111,16 +111,16 @@ describe("addManyArticles", () => {
             user_id: rdm_user(tab_id_users)
         }]
 
-        ArticleService.addManyArticles(articles_tab,null, function (err, value) {
-            tab_id_articles = _.map(value, '_id')
-            articles = [...value, ...articles]
+        RecipeService.addManyRecipes(recipes_tab,null, function (err, value) {
+            tab_id_recipes = _.map(value, '_id')
+            recipes = [...value, ...recipes]
             expect(value).lengthOf(3)
             //console.log(value)
             done()
         })
     })
-    it("Articles à ajouter, non valide. - E", (done) => {
-        var articles_tab_error = [{
+    it("Recettes à ajouter, non valide. - E", (done) => {
+        var recipes_tab_error = [{
             name: "fourchette",
             description: "ceci est une description",
             price: -20,
@@ -128,7 +128,7 @@ describe("addManyArticles", () => {
             user_id: rdm_user(tab_id_users)
         }, {
             name: "couteau",
-            price: 10,
+            price: 12,
             quantity: -20,
             user_id: rdm_user(tab_id_users)
         },
@@ -140,23 +140,23 @@ describe("addManyArticles", () => {
             user_id: rdm_user(tab_id_users)
         }]
 
-        ArticleService.addManyArticles(articles_tab_error,null, function (err, value) {
+        RecipeService.addManyRecipes(recipes_tab_error,null, function (err, value) {
             done()
         })
     })
 })
 
-describe("findOneArticleById", () => {
-    it("Chercher un article existant correct. - S", (done) => {
-        ArticleService.findOneArticleById(id_article_valid,null, function (err, value) {
+describe("findOneRecipeById", () => {
+    it("Chercher une recette existante correcte. - S", (done) => {
+        RecipeService.findOneRecipeById(id_article_valid,null, function (err, value) {
             expect(value).to.be.a('object');
             expect(value).to.haveOwnProperty('_id')
             expect(value).to.haveOwnProperty('name')
             done()
         })
     })
-    it("Chercher un article non-existant correct. - E", (done) => {
-        ArticleService.findOneArticleById("100",null, function (err, value) {
+    it("Chercher une recette non-existante correcte. - E", (done) => {
+        RecipeService.findOneRecipeById("100",null, function (err, value) {
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('type_error')
             expect(err["type_error"]).to.equal('no-valid')
@@ -165,9 +165,9 @@ describe("findOneArticleById", () => {
     })
 })
 
-describe("findManyArticlesById", () => {
-    it("Chercher des articles existant correct. - S", (done) => {
-        ArticleService.findManyArticlesById(tab_id_articles,null ,function (err, value) {
+describe("findManyRecipesById", () => {
+    it("Chercher des recettes existantes correctes. - S", (done) => {
+        RecipeService.findManyRecipesById(tab_id_articles,null ,function (err, value) {
             expect(value).lengthOf(3)
             done()
 
@@ -175,31 +175,31 @@ describe("findManyArticlesById", () => {
     })
 })
 
-describe("findOneArticle", () => {
-    it("Chercher un article par les champs selectionnées. - S", (done) => {
-        ArticleService.findOneArticle(["name", "description"], articles[0].name,null, function (err, value) {
+describe("findOneRecipe", () => {
+    it("Chercher une recette par les champs selectionnés. - S", (done) => {
+        RecipeService.findOneRecipe(["name", "description"], articles[0].name,null, function (err, value) {
             expect(value).to.haveOwnProperty('name')
             done()
 
         })
     })
-    it("Chercher un article sans tableau de champ. - E", (done) => {
-        ArticleService.findOneArticle("name", articles[0].name,null, function (err, value) {
+    it("Chercher une recette sans tableau de champ. - E", (done) => {
+        RecipeService.findOneRecipe("name", articles[0].name,null, function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
             done()
         })
     })
-    it("Chercher un article inexistant. - E", (done) => {
-        ArticleService.findOneArticle(["name"], "articles[0].name",null ,function (err, value) {
+    it("Chercher une recette inexistante. - E", (done) => {
+        RecipeService.findOneRecipe(["name"], "articles[0].name",null ,function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
             done()
         })
     })
 })
 
-describe("findManyArticles", () => {
+describe("findManyRecipes", () => {
     it("Retourne 3 articles - S", (done) => {
-        ArticleService.findManyArticles(null, 3, 1, null, function (err, value) {
+        RecipeService.findManyRecipes(null, 3, 1, null, function (err, value) {
             expect(value).to.haveOwnProperty("count")
             expect(value).to.haveOwnProperty("results")
             expect(value["count"]).to.be.equal(4)
@@ -209,7 +209,7 @@ describe("findManyArticles", () => {
         })
     })
     it("Faire une recherche avec 0 résultats correspondant - S", (done) => {
-        ArticleService.findManyArticles('couteau', 1, 3, null, function (err, value) {
+        RecipeService.findManyRecipes('couteau', 1, 3, null, function (err, value) {
             expect(value).to.haveOwnProperty("count")
             expect(value).to.haveOwnProperty("results")
             expect(value["count"]).to.be.equal(1)
@@ -219,7 +219,7 @@ describe("findManyArticles", () => {
         })
     })
     it("Envoie d'une chaine de caractère a la place de la page - E", (done) => {
-        ArticleService.findManyArticles(null, "coucou", 3, null, function (err, value) {
+        RecipeService.findManyRecipes(null, "coucou", 3, null, function (err, value) {
             expect(err).to.haveOwnProperty("type_error")
             expect(err["type_error"]).to.be.equal("no-valid")
             expect(value).to.undefined
@@ -228,9 +228,9 @@ describe("findManyArticles", () => {
     })
 })
 
-describe("updateOneArticle", () => {
-    it("Modifier un article correct. - S", (done) => {
-        ArticleService.updateOneArticle(id_article_valid, { name: "Moto", description: "Vroum vroum" },null, function (err, value) {
+describe("updateOneRecipe", () => {
+    it("Modifier une recette correcte. - S", (done) => {
+        RecipeService.updateOneRecipe(id_article_valid, { name: "Moto", description: "Vroum vroum" },null, function (err, value) {
             expect(value).to.be.a('object')
             expect(value).to.haveOwnProperty('_id')
             expect(value).to.haveOwnProperty('name')
@@ -242,8 +242,8 @@ describe("updateOneArticle", () => {
 
         })
     })
-    it("Modifier un article avec id incorrect. - E", (done) => {
-        ArticleService.updateOneArticle("1200", { name: "Jean", price: 60 },null, function (err, value) {
+    it("Modifier une recette avec id incorrect. - E", (done) => {
+        RecipeService.updateOneRecipe("1200", { name: "Jean", price: 60 },null, function (err, value) {
             expect(err).to.be.a('object')
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('type_error')
@@ -251,8 +251,8 @@ describe("updateOneArticle", () => {
             done()
         })
     })
-    it("Modifier un article avec des champs requis vide. - E", (done) => {
-        ArticleService.updateOneArticle(id_article_valid, { name: "", description: "pas bon" },null, function (err, value) {
+    it("Modifier une recette avec des champs requis vide. - E", (done) => {
+        RecipeService.updateOneRecipe(id_recipe_valid, { name: "", description: "pas bon" },null, function (err, value) {
             expect(value).to.be.undefined
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('fields_with_error').with.lengthOf(1)
@@ -264,19 +264,19 @@ describe("updateOneArticle", () => {
     })
 })
 
-describe("updateManyArticles", () => {
-    it("Modifier plusieurs articles correctement. - S", (done) => {
-        ArticleService.updateManyArticles(tab_id_articles, { name: "Jean", price: 80 },null, function (err, value) {
+describe("updateManyRecipes", () => {
+    it("Modifier plusieurs recettes correctement. - S", (done) => {
+        RecipeService.updateManyRecipes(tab_id_recipes, { name: "Jean", price: 80 },null, function (err, value) {
             expect(value).to.haveOwnProperty('modifiedCount')
             expect(value).to.haveOwnProperty('matchedCount')
-            expect(value['matchedCount']).to.be.equal(tab_id_articles.length)
-            expect(value['modifiedCount']).to.be.equal(tab_id_articles.length)
+            expect(value['matchedCount']).to.be.equal(tab_id_recipes.length)
+            expect(value['modifiedCount']).to.be.equal(tab_id_recipes.length)
             done()
 
         })
     })
-    it("Modifier plusieurs articles avec id incorrect. - E", (done) => {
-        ArticleService.updateManyArticles("1200", { name: "trotinette", description: "oui oui" },null, function (err, value) {
+    it("Modifier plusieurs recettes avec id incorrect. - E", (done) => {
+        RecipeService.updateManyRecipes("1200", { name: "trottinette", description: "oui oui" },null, function (err, value) {
             expect(err).to.be.a('object')
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('type_error')
@@ -284,8 +284,8 @@ describe("updateManyArticles", () => {
             done()
         })
     })
-    it("Modifier plusieurs articles avec des champs requis vide. - E", (done) => {
-        ArticleService.updateManyArticles(tab_id_articles, { name: "", description: "test" },null, function (err, value) {
+    it("Modifier plusieurs recettes avec des champs requis vide. - E", (done) => {
+        RecipeService.updateManyRecipes(tab_id_recipes, { name: "", description: "test" },null, function (err, value) {
             expect(value).to.be.undefined
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('fields_with_error').with.lengthOf(1)
@@ -297,9 +297,9 @@ describe("updateManyArticles", () => {
     })
 })
 
-describe("deleteOneArticle", () => {
-    it("Supprimer un article correct. - S", (done) => {
-        ArticleService.deleteOneArticle(id_article_valid,null, function (err, value) { //callback
+describe("deleteOneRecipe", () => {
+    it("Supprimer une recette correcte. - S", (done) => {
+        RecipeService.deleteOneRecipe(id_recipe_valid,null, function (err, value) { //callback
             expect(value).to.be.a('object')
             expect(value).to.haveOwnProperty('_id')
             expect(value).to.haveOwnProperty('name')
@@ -307,8 +307,8 @@ describe("deleteOneArticle", () => {
             done()
         })
     })
-    it("Supprimer un article avec id incorrect. - E", (done) => {
-        ArticleService.deleteOneArticle("1200",null, function (err, value) {
+    it("Supprimer une recette avec id incorrect. - E", (done) => {
+        RecipeService.deleteOneRecipe("1200",null, function (err, value) {
             expect(err).to.be.a('object')
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('type_error')
@@ -316,8 +316,8 @@ describe("deleteOneArticle", () => {
             done()
         })
     })
-    it("Supprimer un article avec un id inexistant. - E", (done) => {
-        ArticleService.deleteOneArticle("665f00c6f64f76ba59361e9f",null, function (err, value) {
+    it("Supprimer une recette avec un id inexistant. - E", (done) => {
+        RecipeService.deleteOneRecipe("665f00c6f64f76ba59361e9f",null, function (err, value) {
             expect(err).to.be.a('object')
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('type_error')
@@ -327,18 +327,18 @@ describe("deleteOneArticle", () => {
     })
 })
 
-describe("deleteManyArticles", () => {
-    it("Supprimer plusieurs articles correctement. - S", (done) => {
-        ArticleService.deleteManyArticles(tab_id_articles,null, function (err, value) {
+describe("deleteManyRecipes", () => {
+    it("Supprimer plusieurs recettes correctement. - S", (done) => {
+        RecipeService.deleteManyRecipes(tab_id_recipes,null, function (err, value) {
             expect(value).to.be.a('object')
             expect(value).to.haveOwnProperty('deletedCount')
-            expect(value['deletedCount']).is.equal(tab_id_articles.length)
+            expect(value['deletedCount']).is.equal(tab_id_recipes.length)
             done()
 
         })
     })
-    it("Supprimer plusieurs articles avec id incorrect. - E", (done) => {
-        ArticleService.deleteManyArticles("1200",null, function (err, value) {
+    it("Supprimer plusieurs recettes avec id incorrect. - E", (done) => {
+        RecipeService.deleteManyRecipes("1200",null, function (err, value) {
             expect(err).to.be.a('object')
             expect(err).to.haveOwnProperty('msg')
             expect(err).to.haveOwnProperty('type_error')
