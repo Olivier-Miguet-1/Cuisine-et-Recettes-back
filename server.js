@@ -4,6 +4,8 @@ const _ = require("lodash")
 const bodyParser = require('body-parser')
 const Config = require ('./config')
 const Logger = require('./utils/logger').pino
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 // Création de notre application express.js
 const app = express()
@@ -26,6 +28,12 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// configuration Swagger
+const swaggerOptions = require('./swagger.json');
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve,
+swaggerUi.setup(swaggerDocs));
 
 // Déclaration des controllers pour l'utilisateur
 const UserController = require('./controllers/UserController')
@@ -62,19 +70,19 @@ app.delete('/user/:id', DatabaseMiddleware.checkConnexion, passport.authenticate
 
 /*--------------------- Création des routes (Recipe - Recette) ---------------------*/
 
-// Création du endpoint /recipe pour l'ajout d'une recipe
+// Création du endpoint /recipe pour l'ajout d'une recette
 app.post('/recipe', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }),  RecipeController.addOneRecipe)
 
-// Création du endpoint /recipe pour la récupération d'une recipe via l'id
+// Création du endpoint /recipe pour la récupération d'une recette via l'id
 app.get('/recipe/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), RecipeController.findOneRecipeById)
 
-// Création du endpoint /recipe pour la récupération d'une recipe par le champ selectionné
+// Création du endpoint /recipe pour la récupération d'une recette par le champ selectionné
 app.get('/recipe', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), RecipeController.findOneRecipe)
 
-// Création du endpoint /recipe pour la modification d'une recipe
+// Création du endpoint /recipe pour la modification d'une recette
 app.put('/recipe/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), RecipeController.updateOneRecipe)
 
-// Création du endpoint /recipe pour la suppression d'une recipe
+// Création du endpoint /recipe pour la suppression d'une recette
 app.delete('/recipe/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), RecipeController.deleteOneRecipe)
 
 
