@@ -1,0 +1,160 @@
+{
+    "swaggerDefinition": {
+    "openapi": "3.0.0",
+    "info": {
+    "title": "Cuisine & Recettes Back",
+    "version": "1.0.0",
+    "description": "API documentation"
+    },
+    "servers": [
+    {
+    "url": "http://localhost:3000",
+    "description": "Development server"
+    }
+    ],
+    "components": {
+    "securitySchemes": {
+    "bearerAuth": {
+    "type": "http",
+    "scheme": "bearer",
+    "bearerFormat": "JWT"
+    }
+    },
+    "schemas": {
+    "User": {
+    "type": "object",
+    "required": ["_id", "firstName", "lastName", "username", "email", "password"],
+    "properties": {
+    "_id": {
+    "type": "ObjectId",
+   "description": "The user's first Id",
+   "example": "J23!kl24:mN"
+    },
+    "userName": {
+    "type": "string",
+   "description": "The user's username",
+   "example": "johndoe"
+    },
+    "firstName": {
+    "type": "string",
+   "description": "The user's first name",
+   "example": "John"
+    },
+    "lastName": {
+    "type": "string",
+   "description": "The user's last name",
+   "example": "Doe"
+    },
+    "email": {
+    "type": "string",
+   "description": "The user's email",
+   "example": "johndoe@example.com"
+    },
+    "password": {
+    "type": "string",
+   "description": "The user's password",
+   "example": "secret"
+    },
+    "token": {
+    "type": "string",
+   "description": "An optional token for the user",
+   "example": "somerandomtoken"
+ }
+ }
+ },
+ "Login": {
+ "type": "object",
+ "required": [ "username", "password"],
+ "properties": {
+ "username": {
+ "type": "string",
+"description": "The user's username",
+"example": "johndoe"
+ },
+ "password": {
+ "type": "string",
+"description": "The user's password",
+"example": "secret"
+ }
+ }
+ }
+ },
+ "responses": {
+ "NotFound": {
+ "description": "Resource not found",
+ "content": {
+ "application/json": {
+ "schema": {
+ "type": "object",
+"properties": {
+ "type_error": {
+ "type": "string",
+"example": "no-found"
+ },
+ "message": {
+ "type": "string",
+"example": "Resource not found"
+}
+}
+}
+}
+}
+},
+"ValidationError": {
+"description": "Validation error",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"type_error": {
+"type": "string",
+"example": "validator"
+},
+"message": {
+"type": "string",
+"example": "Validation error"
+}
+}
+}
+}
+}
+},
+"DuplicateError": {
+"description": "Duplicate entry",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"type_error": {
+"type": "string",
+"example": "duplicate"
+},
+"message": {
+"type": "string",
+"example": "Duplicate entry"
+}
+}
+}
+}
+}
+}
+}
+},
+"tags": [
+{
+"name": "User",
+"description": "Operations about user"
+},
+{
+"name": "Login",
+"description": "Operations about authentification"
+}
+]
+},
+"apis": [
+"./controllers/*.js"
+]
+}
+
