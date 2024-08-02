@@ -29,4 +29,5 @@ passport.use(new JWTStrategy({
     })
 }))
 
-module.exports = passport;var passport = require('passport');
+module.exports = passport
+
