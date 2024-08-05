@@ -267,12 +267,12 @@ describe("PUT - /recipe", () => {
   });
 });
 
-describe("PUT - /articles", () => {
-  it("Modifier plusieurs articles. - S", (done) => {
+describe("PUT - /recipes", () => {
+  it("Modifier plusieurs recipes. - S", (done) => {
     chai
       .request(server)
-      .put("/articles")
-      .query({ id: _.map(articles, "_id") })
+      .put("/recipes")
+      .query({ id: _.map(recipes, "_id") })
       .send({ price: 30 })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
@@ -281,10 +281,10 @@ describe("PUT - /articles", () => {
       });
   });
 
-  it("Modifier plusieurs articles avec des ids invalide. - E", (done) => {
+  it("Modifier plusieurs recipes avec des ids invalide. - E", (done) => {
     chai
       .request(server)
-      .put("/articles")
+      .put("/recipes")
       .query({ id: ["267428142", "41452828"] })
       .send({ name: "Alexandre" })
       .auth(token_login, { type: "bearer" })
@@ -294,10 +294,10 @@ describe("PUT - /articles", () => {
       });
   });
 
-  it("Modifier plusieurs articles avec des ids inexistant. - E", (done) => {
+  it("Modifier plusieurs recipes avec des ids inexistant. - E", (done) => {
     chai
       .request(server)
-      .put("/articles")
+      .put("/recipes")
       .query({ id: ["66791a552b38d88d8c6e9ee7", "667980886db560087464d3a7"] })
       .send({ name: "Lutfu" })
       .auth(token_login, { type: "bearer" })
@@ -307,11 +307,11 @@ describe("PUT - /articles", () => {
       });
   });
 
-  it("Modifier des articles avec un champ requis vide. - E", (done) => {
+  it("Modifier des recipes avec un champ requis vide. - E", (done) => {
     chai
       .request(server)
-      .put("/articles")
-      .query({ id: _.map(articles, "_id") })
+      .put("/recipes")
+      .query({ id: _.map(recipes, "_id") })
       .send({ name: "" })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
@@ -321,31 +321,31 @@ describe("PUT - /articles", () => {
   });
 });
 
-describe("DELETE - /article", () => {
-  it("Supprimer un article. - S", (done) => {
+describe("DELETE - /recipe", () => {
+  it("Supprimer une recipe. - S", (done) => {
     chai
       .request(server)
-      .delete("/article/" + articles[0]._id)
+      .delete("/recipe/" + recipes[0]._id)
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
         res.should.have.status(200);
         done();
       });
   });
-  it("Supprimer un article incorrect (avec un id inexistant). - E", (done) => {
+  it("Supprimer une recipe incorrect (avec un id inexistant). - E", (done) => {
     chai
       .request(server)
-      .delete("/article/665f18739d3e172be5daf092")
+      .delete("/recipe/665f18739d3e172be5daf092")
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
         res.should.have.status(404);
         done();
       });
   });
-  it("Supprimer un article incorrect (avec un id invalide). - E", (done) => {
+  it("Supprimer une recipe incorrect (avec un id invalide). - E", (done) => {
     chai
       .request(server)
-      .delete("/article/123")
+      .delete("/recipe/123")
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
         res.should.have.status(405);
@@ -354,32 +354,32 @@ describe("DELETE - /article", () => {
   });
 });
 
-describe("DELETE - /articles", () => {
-  it("Supprimer plusieurs articles. - S", (done) => {
+describe("DELETE - /recipes", () => {
+  it("Supprimer plusieurs recipes. - S", (done) => {
     chai
       .request(server)
-      .delete("/articles")
-      .query({ id: _.map(articles, "_id") })
+      .delete("/recipes")
+      .query({ id: _.map(recipes, "_id") })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
         res.should.have.status(200);
         done();
       });
   });
-  it("Supprimer plusieurs articles incorrects (avec un id inexistant). - E", (done) => {
+  it("Supprimer plusieurs recipes incorrects (avec un id inexistant). - E", (done) => {
     chai
       .request(server)
-      .delete("/articles/665f18739d3e172be5daf092&665f18739d3e172be5daf093")
+      .delete("/recipes/665f18739d3e172be5daf092&665f18739d3e172be5daf093")
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
         res.should.have.status(404);
         done();
       });
   });
-  it("Supprimer plusieurs articles incorrects (avec un id invalide). - E", (done) => {
+  it("Supprimer plusieurs recipes incorrects (avec un id invalide). - E", (done) => {
     chai
       .request(server)
-      .delete("/articles")
+      .delete("/recipes")
       .query({ id: ["123", "456"] })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {

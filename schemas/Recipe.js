@@ -25,7 +25,6 @@ var RecipeSchema = mongoose.Schema({
         type: ObjectId,
         ref: "User",
         required: true,
-        
     },
     utensils: {
     type: ObjectId,

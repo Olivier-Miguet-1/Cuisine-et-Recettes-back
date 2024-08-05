@@ -59,6 +59,9 @@ app.use(bodyParser.json(), LoggerMiddleware.addLogger)
 // Création du endpoint /login pour connecter un utilisateur
 app.post('/login', DatabaseMiddleware.checkConnexion, UserController.loginUser)
 
+// Création du endpoint /login pour connecter un utilisateur
+app.post('/login', DatabaseMiddleware.checkConnexion, UserController.loginUser)
+
 // Création du endpoint /user pour l'ajout d'un utilisateur
 app.post('/user', DatabaseMiddleware.checkConnexion, UserController.addOneUser)
 
