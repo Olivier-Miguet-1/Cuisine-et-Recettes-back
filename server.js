@@ -96,6 +96,42 @@ app.put('/recipe/:id', DatabaseMiddleware.checkConnexion, passport.authenticate(
 app.delete('/recipe/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), RecipeController.deleteOneRecipe)
 
 
+/*--------------------- Création des routes (Ingredient - Ingrédient) ---------------------*/
+
+// Création du endpoint /ingredient pour l'ajout d'un ingrédient
+app.post('/ingredient', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }),  IngredientController.addOneIngredient)
+
+// Création du endpoint /ingredient pour la récupération d'un ingrédient via l'id
+app.get('/ingredient/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), IngredientController.findOneIngredientById)
+
+// Création du endpoint /ingredient pour la récupération d'un ingrédient par le champ selectionné
+app.get('/ingredient', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), IngredientController.findOneIngredient)
+
+// Création du endpoint /ingredient pour la modification d'un ingrédient
+app.put('/ingredient/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), IngredientController.updateOneIngredient)
+
+// Création du endpoint /ingredient pour la suppression d'un ingrédient
+app.delete('/ingredient/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), IngredientController.deleteOneIngredient)
+
+
+/*--------------------- Création des routes (Utensil - Ustensile) ---------------------*/
+
+// Création du endpoint /utensil pour l'ajout d'un ustensile
+app.post('/utensil', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }),  UtensilController.addOneUtensil)
+
+// Création du endpoint /utensil pour la récupération d'un ustensile via l'id
+app.get('/utensil/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UtensilController.findOneUtensilById)
+
+// Création du endpoint /utensil pour la récupération d'un ustensile par le champ selectionné
+app.get('/utensil', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UtensilController.findOneUtensil)
+
+// Création du endpoint /utensil pour la modification d'un ustensile
+app.put('/utensil/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UtensilController.updateOneUtensil)
+
+// Création du endpoint /utensil pour la suppression d'un ustensile
+app.delete('/utensil/:id', DatabaseMiddleware.checkConnexion, passport.authenticate('jwt', { session: false }), UtensilController.deleteOneUtensil)
+
+
 // 2e chose à faire : Créer le server avec app.listen
 
 app.listen(Config.port, () => {   
