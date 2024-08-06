@@ -72,11 +72,11 @@ module.exports.findOneingredientById = function (ingredient_id, options, callbac
     }
 }
 
-/* module.exports.findManyIngredientsById = function (Ingredients_id, options, callback) {
+module.exports.findManyIngredientsById = function (Ingredients_id, options, callback) {
     var opts = {populate: (options && options.populate ? ["user_id"] : []), lean: true}
     if (Ingredients_id && Array.isArray(Ingredients_id) && Ingredients_id.length > 0 && Ingredients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingredients_id.length) {
         Ingredients_id = Ingredients_id.map((e) => { return new ObjectId(e) })
-        Article.find({ _id: Ingredients_id }, null, opts).then((value) => {
+        Recipe.find({ _id: Ingredients_id }, null, opts).then((value) => {
             try {
                 if (value && Array.isArray(value) && value.length != 0) {
                     callback(null, value);
@@ -100,7 +100,7 @@ module.exports.findOneingredientById = function (ingredient_id, options, callbac
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}
 
 module.exports.findOneingredient = function (tab_field, value, options, callback) {
     var field_unique = ['name', 'description', 'price', 'quantity']
@@ -141,7 +141,7 @@ module.exports.findOneingredient = function (tab_field, value, options, callback
     }
 }
 
-/* module.exports.findManyIngredients = function(search, limit, page, options, callback) {
+module.exports.findManyIngredients = function(search, limit, page, options, callback) {
     page = !page ? 1 : parseInt(page)
     limit = !limit ? 10 : parseInt(limit)
     var populate = options && options.populate ? ['user_id']: []
@@ -149,10 +149,10 @@ module.exports.findOneingredient = function (tab_field, value, options, callback
         callback ({msg: `format de ${typeof page !== "number" ? "page" : "limit"} est incorrect`, type_error: "no-valid"})
     }else{
         let query_mongo = search ? {$or: _.map(["name", "description"], (e) => {return {[e]: {$regex: search}}})} : {}
-        Article.countDocuments(query_mongo).then((value) => {
+        Recipe.countDocuments(query_mongo).then((value) => {
             if (value > 0) {
                 const skip = ((page - 1) * limit)
-                Article.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
+                Recipe.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
                     callback(null, {
                         count: value,
                         results: results
@@ -165,7 +165,7 @@ module.exports.findOneingredient = function (tab_field, value, options, callback
             callback(e)
         })
     }
-} */
+}
 
 module.exports.updateOneingredient = function (ingredient_id, update, options, callback) {
     update.updated_at = new Date()
@@ -176,7 +176,7 @@ module.exports.updateOneingredient = function (ingredient_id, update, options, c
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Article non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Recipe non trouvé.", type_error: "no-found" });
             } catch (e) {
                 callback(e)
             }
@@ -213,11 +213,11 @@ module.exports.updateOneingredient = function (ingredient_id, update, options, c
     }
 }
 
-/* module.exports.updateManyIngredients = function (Ingredients_id, update, options, callback) {
+module.exports.updateManyIngredients = function (Ingredients_id, update, options, callback) {
     // 
     if (Ingredients_id && Array.isArray(Ingredients_id) && Ingredients_id.length > 0 && Ingredients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingredients_id.length) {
         Ingredients_id = Ingredients_id.map((e) => { return new ObjectId(e) })
-        Article.updateMany({ _id: Ingredients_id }, update, { runValidators: true }).then((value) => {
+        Recipe.updateMany({ _id: Ingredients_id }, update, { runValidators: true }).then((value) => {
             try {
                 // 
                 if(value && value.matchedCount != 0){
@@ -261,7 +261,7 @@ module.exports.updateOneingredient = function (ingredient_id, update, options, c
     else {
         callback({ msg: "Id invalide.", type_error: 'no-valid' })
     }
-} */
+}
 
 module.exports.deleteOneingredient = function (ingredient_id, options, callback) {
     if (ingredient_id && mongoose.isValidObjectId(ingredient_id)) {
@@ -270,7 +270,7 @@ module.exports.deleteOneingredient = function (ingredient_id, options, callback)
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Article non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Recipe non trouvé.", type_error: "no-found" });
             }
             catch (e) {
                 
@@ -285,10 +285,10 @@ module.exports.deleteOneingredient = function (ingredient_id, options, callback)
     }
 }
 
-/* module.exports.deleteManyIngredients = function (Ingredients_id, options, callback) {
+module.exports.deleteManyIngredients = function (Ingredients_id, options, callback) {
     if (Ingredients_id && Array.isArray(Ingredients_id) && Ingredients_id.length > 0 && Ingredients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingredients_id.length) {
         Ingredients_id = Ingredients_id.map((e) => { return new ObjectId(e) })
-        Article.deleteMany({ _id: Ingredients_id }).then((value) => {
+        Recipe.deleteMany({ _id: Ingredients_id }).then((value) => {
             callback(null, value)
         }).catch((err) => {
             callback({ msg: "Erreur mongo suppression.", type_error: "error-mongo" });
@@ -304,4 +304,4 @@ module.exports.deleteOneingredient = function (ingredient_id, options, callback)
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}

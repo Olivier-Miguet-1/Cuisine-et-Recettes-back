@@ -1,18 +1,18 @@
-const IngredientSchema = require('../schemas/Ingredient')
+const UtensilSchema = require('../schemas/Utensil')
 const _ = require('lodash')
 const async = require('async')
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
 
-var Ingredient = mongoose.model('Ingredient', IngredientSchema)
+var Utensil = mongoose.model('Utensil', UtensilSchema)
 
-Ingredient.createIndexes()
+Utensil.createIndexes()
 
-module.exports.addOneIngredient = async function (Ingredient, options, callback) {
+module.exports.addOneUtensil = async function (Utensil, options, callback) {
     try {
-        Ingredient.user_id = options && options.user ? options.user._id: Ingredient.user_id
-        var new_Ingredient = new Ingredient(Ingredient);
-        var errors = new_Ingredient.validateSync();
+        Utensil.user_id = options && options.user ? options.user._id: Utensil.user_id
+        var new_Utensil = new Utensil(Utensil);
+        var errors = new_Utensil.validateSync();
         if (errors) {
             errors = errors['errors'];
             var text = Object.keys(errors).map((e) => {
@@ -29,8 +29,8 @@ module.exports.addOneIngredient = async function (Ingredient, options, callback)
             };
             callback(err);
         } else {
-            await new_Ingredient.save();
-            callback(null, new_Ingredient.toObject());
+            await new_Utensil.save();
+            callback(null, new_Utensil.toObject());
         }
     } catch (error) {
         if (error.code === 11000) { // Erreur de duplicité
@@ -48,17 +48,15 @@ module.exports.addOneIngredient = async function (Ingredient, options, callback)
     }
 };
 
-
-
-module.exports.findOneIngredientById = function (Ingredient_id, options, callback) {
+module.exports.findOneUtensilById = function (Utensil_id, options, callback) {
     var opts ={populate: options && options.populate ? ["user_id"] : []}
-    if (Ingredient_id && mongoose.isValidObjectId(Ingredient_id)) {
-        Ingredient.findById(Ingredient_id, null, opts).then((value) => {
+    if (Utensil_id && mongoose.isValidObjectId(Utensil_id)) {
+        Utensil.findById(Utensil_id, null, opts).then((value) => {
             try {
                 if (value) {
                     callback(null, value.toObject());
                 } else {
-                    callback({ msg: "Aucun ingrédient trouvée.", type_error: "no-found" });
+                    callback({ msg: "Aucun ustensile trouvé.", type_error: "no-found" });
                 }
             }
             catch (e) {
@@ -72,16 +70,16 @@ module.exports.findOneIngredientById = function (Ingredient_id, options, callbac
     }
 }
 
-/* module.exports.findManyIngrédientsById = function (Ingrédients_id, options, callback) {
+module.exports.findManyUtensilsById = function (Utensils_id, options, callback) {
     var opts = {populate: (options && options.populate ? ["user_id"] : []), lean: true}
-    if (Ingrédients_id && Array.isArray(Ingrédients_id) && Ingrédients_id.length > 0 && Ingrédients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingrédients_id.length) {
-        Ingrédients_id = Ingrédients_id.map((e) => { return new ObjectId(e) })
-        Ingrédient.find({ _id: Ingrédients_id }, null, opts).then((value) => {
+    if (Utensils_id && Array.isArray(Utensils_id) && Utensils_id.length > 0 && Utensils_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Utensils_id.length) {
+        Utensils_id = Utensils_id.map((e) => { return new ObjectId(e) })
+        Utensil.find({ _id: Utensils_id }, null, opts).then((value) => {
             try {
                 if (value && Array.isArray(value) && value.length != 0) {
                     callback(null, value);
                 } else {
-                    callback({ msg: "Aucun Ingrédient trouvé.", type_error: "no-found" });
+                    callback({ msg: "Aucun ustensile trouvé.", type_error: "no-found" });
                 }
             }
             catch (e) {
@@ -91,18 +89,18 @@ module.exports.findOneIngredientById = function (Ingredient_id, options, callbac
             callback({ msg: "Impossible de chercher l'élément.", type_error: "error-mongo" });
         });
     }
-    else if (Ingrédients_id && Array.isArray(Ingrédients_id) && Ingrédients_id.length > 0 && Ingrédients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != Ingrédients_id.length) {
-        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: Ingrédients_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
+    else if (Utensils_id && Array.isArray(Utensils_id) && Utensils_id.length > 0 && Utensils_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != Utensils_id.length) {
+        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: Utensils_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
     }
-    else if (Ingrédients_id && !Array.isArray(Ingrédients_id)) {
+    else if (Utensils_id && !Array.isArray(Utensils_id)) {
         callback({ msg: "L'argument n'est pas un tableau.", type_error: 'no-valid' });
     }
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}
 
-module.exports.findOneIngredient = function (tab_field, value, options, callback) {
+module.exports.findOneUtensil = function (tab_field, value, options, callback) {
     var field_unique = ['name', 'description', 'price', 'quantity']
     var opts = {populate: options && options.populate ? ["user_id"] : []}
 
@@ -111,11 +109,11 @@ module.exports.findOneIngredient = function (tab_field, value, options, callback
         _.forEach(tab_field, (e) => {
             obj_find.push({[e]: value})
         })
-        Ingredient.findOne({ $or: obj_find}, null, opts).then((value) => {
+        Utensil.findOne({ $or: obj_find}, null, opts).then((value) => {
             if (value){
                 callback(null, value.toObject())
             }else {
-                callback({msg: "Ingrédient non trouvé.", type_error: "no-found"})
+                callback({msg: "Utensil non trouvé.", type_error: "no-found"})
             }
         }).catch((err) => {
             callback({msg: "Error interne mongo", type_error:'error-mongo'})
@@ -141,7 +139,7 @@ module.exports.findOneIngredient = function (tab_field, value, options, callback
     }
 }
 
-/* module.exports.findManyIngrédients = function(search, limit, page, options, callback) {
+module.exports.findManyUtensils = function(search, limit, page, options, callback) {
     page = !page ? 1 : parseInt(page)
     limit = !limit ? 10 : parseInt(limit)
     var populate = options && options.populate ? ['user_id']: []
@@ -149,10 +147,10 @@ module.exports.findOneIngredient = function (tab_field, value, options, callback
         callback ({msg: `format de ${typeof page !== "number" ? "page" : "limit"} est incorrect`, type_error: "no-valid"})
     }else{
         let query_mongo = search ? {$or: _.map(["name", "description"], (e) => {return {[e]: {$regex: search}}})} : {}
-        Ingrédient.countDocuments(query_mongo).then((value) => {
+        Utensil.countDocuments(query_mongo).then((value) => {
             if (value > 0) {
                 const skip = ((page - 1) * limit)
-                Ingrédient.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
+                Utensil.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
                     callback(null, {
                         count: value,
                         results: results
@@ -165,18 +163,18 @@ module.exports.findOneIngredient = function (tab_field, value, options, callback
             callback(e)
         })
     }
-} */
+}
 
-module.exports.updateOneIngredient = function (Ingredient_id, update, options, callback) {
+module.exports.updateOneUtensil = function (Utensil_id, update, options, callback) {
     update.updated_at = new Date()
-    if (Ingredient_id && mongoose.isValidObjectId(Ingredient_id)) {
-        Ingredient.findByIdAndUpdate(new ObjectId(Ingredient_id), update, { returnDocument: 'after', runValidators: true }).then((value) => {
+    if (Utensil_id && mongoose.isValidObjectId(Utensil_id)) {
+        Utensil.findByIdAndUpdate(new ObjectId(Utensil_id), update, { returnDocument: 'after', runValidators: true }).then((value) => {
             try {
                 // callback(null, value.toObject())
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Ingrédient non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Utensil non trouvé.", type_error: "no-found" });
             } catch (e) {
                 callback(e)
             }
@@ -213,11 +211,11 @@ module.exports.updateOneIngredient = function (Ingredient_id, update, options, c
     }
 }
 
-/* module.exports.updateManyIngrédients = function (Ingrédients_id, update, options, callback) {
+module.exports.updateManyUtensils = function (Utensils_id, update, options, callback) {
     // 
-    if (Ingrédients_id && Array.isArray(Ingrédients_id) && Ingrédients_id.length > 0 && Ingrédients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingrédients_id.length) {
-        Ingrédients_id = Ingrédients_id.map((e) => { return new ObjectId(e) })
-        Ingrédient.updateMany({ _id: Ingrédients_id }, update, { runValidators: true }).then((value) => {
+    if (Utensils_id && Array.isArray(Utensils_id) && Utensils_id.length > 0 && Utensils_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Utensils_id.length) {
+        Utensils_id = Utensils_id.map((e) => { return new ObjectId(e) })
+        Utensil.updateMany({ _id: Utensils_id }, update, { runValidators: true }).then((value) => {
             try {
                 // 
                 if(value && value.matchedCount != 0){
@@ -261,16 +259,16 @@ module.exports.updateOneIngredient = function (Ingredient_id, update, options, c
     else {
         callback({ msg: "Id invalide.", type_error: 'no-valid' })
     }
-} */
+}
 
-module.exports.deleteOneIngredient = function (Ingredient_id, options, callback) {
-    if (Ingredient_id && mongoose.isValidObjectId(Ingredient_id)) {
-        Ingredient.findByIdAndDelete(Ingredient_id).then((value) => {
+module.exports.deleteOneUtensil = function (Utensil_id, options, callback) {
+    if (Utensil_id && mongoose.isValidObjectId(Utensil_id)) {
+        Utensil.findByIdAndDelete(Utensil_id).then((value) => {
             try {
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Ingrédient non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Utensil non trouvé.", type_error: "no-found" });
             }
             catch (e) {
                 
@@ -285,23 +283,23 @@ module.exports.deleteOneIngredient = function (Ingredient_id, options, callback)
     }
 }
 
-/* module.exports.deleteManyIngrédients = function (Ingrédients_id, options, callback) {
-    if (Ingrédients_id && Array.isArray(Ingrédients_id) && Ingrédients_id.length > 0 && Ingrédients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingrédients_id.length) {
-        Ingrédients_id = Ingrédients_id.map((e) => { return new ObjectId(e) })
-        Ingrédient.deleteMany({ _id: Ingrédients_id }).then((value) => {
+module.exports.deleteManyUtensils = function (Utensils_id, options, callback) {
+    if (Utensils_id && Array.isArray(Utensils_id) && Utensils_id.length > 0 && Utensils_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Utensils_id.length) {
+        Utensils_id = Utensils_id.map((e) => { return new ObjectId(e) })
+        Utensil.deleteMany({ _id: Utensils_id }).then((value) => {
             callback(null, value)
         }).catch((err) => {
             callback({ msg: "Erreur mongo suppression.", type_error: "error-mongo" });
         })
     }
-    else if (Ingrédients_id && Array.isArray(Ingrédients_id) && Ingrédients_id.length > 0 && Ingrédients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != Ingrédients_id.length) {
-        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: Ingrédients_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
+    else if (Utensils_id && Array.isArray(Utensils_id) && Utensils_id.length > 0 && Utensils_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != Utensils_id.length) {
+        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: Utensils_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
     }
-    else if (Ingrédients_id && !Array.isArray(Ingrédients_id)) {
-        callback({ msg: "L'argement n'est pas un tableau.", type_error: 'no-valid' });
+    else if (Utensils_id && !Array.isArray(Utensils_id)) {
+        callback({ msg: "L'argument n'est pas un tableau.", type_error: 'no-valid' });
 
     }
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}

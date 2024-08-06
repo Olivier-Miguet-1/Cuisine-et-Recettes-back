@@ -148,7 +148,7 @@ describe("addManyRecipes", () => {
 
 describe("findOneRecipeById", () => {
     it("Chercher une recette existante correcte. - S", (done) => {
-        RecipeService.findOneRecipeById(id_article_valid,null, function (err, value) {
+        RecipeService.findOneRecipeById(id_recipe_valid,null, function (err, value) {
             expect(value).to.be.a('object');
             expect(value).to.haveOwnProperty('_id')
             expect(value).to.haveOwnProperty('name')
@@ -167,7 +167,7 @@ describe("findOneRecipeById", () => {
 
 describe("findManyRecipesById", () => {
     it("Chercher des recettes existantes correctes. - S", (done) => {
-        RecipeService.findManyRecipesById(tab_id_articles,null ,function (err, value) {
+        RecipeService.findManyRecipesById(tab_id_recipes,null ,function (err, value) {
             expect(value).lengthOf(3)
             done()
 
@@ -177,20 +177,20 @@ describe("findManyRecipesById", () => {
 
 describe("findOneRecipe", () => {
     it("Chercher une recette par les champs selectionnés. - S", (done) => {
-        RecipeService.findOneRecipe(["name", "description"], articles[0].name,null, function (err, value) {
+        RecipeService.findOneRecipe(["name", "description"], recipes[0].name,null, function (err, value) {
             expect(value).to.haveOwnProperty('name')
             done()
 
         })
     })
     it("Chercher une recette sans tableau de champ. - E", (done) => {
-        RecipeService.findOneRecipe("name", articles[0].name,null, function (err, value) {
+        RecipeService.findOneRecipe("name", recipes[0].name,null, function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
             done()
         })
     })
     it("Chercher une recette inexistante. - E", (done) => {
-        RecipeService.findOneRecipe(["name"], "articles[0].name",null ,function (err, value) {
+        RecipeService.findOneRecipe(["name"], "recipes[0].name",null ,function (err, value) {
             expect(err).to.haveOwnProperty('type_error')
             done()
         })
@@ -198,7 +198,7 @@ describe("findOneRecipe", () => {
 })
 
 describe("findManyRecipes", () => {
-    it("Retourne 3 articles - S", (done) => {
+    it("Retourne 3 recipes - S", (done) => {
         RecipeService.findManyRecipes(null, 3, 1, null, function (err, value) {
             expect(value).to.haveOwnProperty("count")
             expect(value).to.haveOwnProperty("results")
@@ -230,7 +230,7 @@ describe("findManyRecipes", () => {
 
 describe("updateOneRecipe", () => {
     it("Modifier une recette correcte. - S", (done) => {
-        RecipeService.updateOneRecipe(id_article_valid, { name: "Moto", description: "Vroum vroum" },null, function (err, value) {
+        RecipeService.updateOneRecipe(id_recipe_valid, { name: "Moto", description: "Vroum vroum" },null, function (err, value) {
             expect(value).to.be.a('object')
             expect(value).to.haveOwnProperty('_id')
             expect(value).to.haveOwnProperty('name')

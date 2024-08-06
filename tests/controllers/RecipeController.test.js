@@ -268,7 +268,7 @@ describe("PUT - /recipe", () => {
 });
 
 describe("PUT - /recipes", () => {
-  it("Modifier plusieurs recipes. - S", (done) => {
+  it("Modifier plusieurs recettes. - S", (done) => {
     chai
       .request(server)
       .put("/recipes")
@@ -281,7 +281,7 @@ describe("PUT - /recipes", () => {
       });
   });
 
-  it("Modifier plusieurs recipes avec des ids invalide. - E", (done) => {
+  it("Modifier plusieurs recettes avec des ids invalide. - E", (done) => {
     chai
       .request(server)
       .put("/recipes")
@@ -294,7 +294,7 @@ describe("PUT - /recipes", () => {
       });
   });
 
-  it("Modifier plusieurs recipes avec des ids inexistant. - E", (done) => {
+  it("Modifier plusieurs recettes avec des ids inexistant. - E", (done) => {
     chai
       .request(server)
       .put("/recipes")
@@ -322,7 +322,7 @@ describe("PUT - /recipes", () => {
 });
 
 describe("DELETE - /recipe", () => {
-  it("Supprimer une recipe. - S", (done) => {
+  it("Supprimer une recette. - S", (done) => {
     chai
       .request(server)
       .delete("/recipe/" + recipes[0]._id)
@@ -332,7 +332,7 @@ describe("DELETE - /recipe", () => {
         done();
       });
   });
-  it("Supprimer une recipe incorrect (avec un id inexistant). - E", (done) => {
+  it("Supprimer une recette incorrecte (avec un id inexistant). - E", (done) => {
     chai
       .request(server)
       .delete("/recipe/665f18739d3e172be5daf092")
@@ -342,7 +342,7 @@ describe("DELETE - /recipe", () => {
         done();
       });
   });
-  it("Supprimer une recipe incorrect (avec un id invalide). - E", (done) => {
+  it("Supprimer une recette incorrecte (avec un id invalide). - E", (done) => {
     chai
       .request(server)
       .delete("/recipe/123")
@@ -355,7 +355,7 @@ describe("DELETE - /recipe", () => {
 });
 
 describe("DELETE - /recipes", () => {
-  it("Supprimer plusieurs recipes. - S", (done) => {
+  it("Supprimer plusieurs recettes. - S", (done) => {
     chai
       .request(server)
       .delete("/recipes")
@@ -366,7 +366,7 @@ describe("DELETE - /recipes", () => {
         done();
       });
   });
-  it("Supprimer plusieurs recipes incorrects (avec un id inexistant). - E", (done) => {
+  it("Supprimer plusieurs recettes incorrectes (avec un id inexistant). - E", (done) => {
     chai
       .request(server)
       .delete("/recipes/665f18739d3e172be5daf092&665f18739d3e172be5daf093")
@@ -376,7 +376,7 @@ describe("DELETE - /recipes", () => {
         done();
       });
   });
-  it("Supprimer plusieurs recipes incorrects (avec un id invalide). - E", (done) => {
+  it("Supprimer plusieurs recettes incorrectes (avec un id invalide). - E", (done) => {
     chai
       .request(server)
       .delete("/recipes")

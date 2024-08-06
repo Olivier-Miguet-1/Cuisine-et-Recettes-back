@@ -108,7 +108,7 @@ module.exports.findOneUser = function (tab_field, value, options, callback) {
         }
     }
 
-/* module.exports.addManyUsers = async function (users, options, callback) {
+module.exports.addManyUsers = async function (users, options, callback) {
     var errors = [];
 
     // Vérifier les erreurs de validation
@@ -162,7 +162,7 @@ module.exports.findOneUser = function (tab_field, value, options, callback) {
             }
         }
     }
-}; */
+};
 
 module.exports.findOneUserById = function (user_id, options, callback) {
     if (user_id && mongoose.isValidObjectId(user_id)) {
@@ -185,7 +185,7 @@ module.exports.findOneUserById = function (user_id, options, callback) {
     }
 }
 
-/* module.exports.findManyUsers = function(search, page, limit, options, callback) {
+module.exports.findManyUsers = function(search, page, limit, options, callback) {
     page = !page ? 1 : parseInt(page)
     limit = !limit ? 10 : parseInt(limit)
     if (typeof page !== "number" || typeof limit !== "number" || isNaN(page) || isNaN(limit)) {
@@ -209,9 +209,9 @@ module.exports.findOneUserById = function (user_id, options, callback) {
             callback(e)
         })
     }
-} */
+}
 
-/* module.exports.findManyUsersById = function (users_id, options, callback) {
+module.exports.findManyUsersById = function (users_id, options, callback) {
     
     if (users_id && Array.isArray(users_id) && users_id.length > 0 && users_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == users_id.length) {
         users_id = users_id.map((e) => { return new ObjectId(e) })
@@ -240,7 +240,7 @@ module.exports.findOneUserById = function (user_id, options, callback) {
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}
 
 module.exports.updateOneUser = async function (user_id, update, options, callback) {
     if (user_id && mongoose.isValidObjectId(user_id)) {
@@ -293,7 +293,7 @@ module.exports.updateOneUser = async function (user_id, update, options, callbac
 }
 
 
-/* module.exports.updateManyUsers = async function (users_id, update, options, callback) {
+module.exports.updateManyUsers = async function (users_id, update, options, callback) {
     //   
     if (users_id && Array.isArray(users_id) && users_id.length > 0 && users_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == users_id.length) {
         users_id = users_id.map((e) => { return new ObjectId(e) })
@@ -343,7 +343,7 @@ module.exports.updateOneUser = async function (user_id, update, options, callbac
     else {
         callback({ msg: "Id invalide.", type_error: 'no-valid' })
     }
-} */
+}
 
 module.exports.deleteOneUser = function (user_id, options, callback) {
     if (user_id && mongoose.isValidObjectId(user_id)) {
@@ -367,7 +367,7 @@ module.exports.deleteOneUser = function (user_id, options, callback) {
     }
 }
 
-/* module.exports.deleteManyUsers = function (users_id, options, callback) {
+module.exports.deleteManyUsers = function (users_id, options, callback) {
     if (users_id && Array.isArray(users_id) && users_id.length > 0 && users_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == users_id.length) {
         users_id = users_id.map((e) => { return new ObjectId(e) })
         User.deleteMany({ _id: users_id }).then((value) => {
@@ -386,4 +386,4 @@ module.exports.deleteOneUser = function (user_id, options, callback) {
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}

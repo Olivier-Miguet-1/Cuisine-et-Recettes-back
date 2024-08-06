@@ -72,11 +72,11 @@ module.exports.findOneRecipeById = function (recipe_id, options, callback) {
     }
 }
 
-/* module.exports.findManyArticlesById = function (articles_id, options, callback) {
+module.exports.findManyRecipesById = function (recipes_id, options, callback) {
     var opts = {populate: (options && options.populate ? ["user_id"] : []), lean: true}
-    if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == articles_id.length) {
-        articles_id = articles_id.map((e) => { return new ObjectId(e) })
-        Article.find({ _id: articles_id }, null, opts).then((value) => {
+    if (recipes_id && Array.isArray(recipes_id) && recipes_id.length > 0 && recipes_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == recipes_id.length) {
+        recipes_id = recipes_id.map((e) => { return new ObjectId(e) })
+        Recipe.find({ _id: recipes_id }, null, opts).then((value) => {
             try {
                 if (value && Array.isArray(value) && value.length != 0) {
                     callback(null, value);
@@ -91,16 +91,16 @@ module.exports.findOneRecipeById = function (recipe_id, options, callback) {
             callback({ msg: "Impossible de chercher l'élément.", type_error: "error-mongo" });
         });
     }
-    else if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != articles_id.length) {
-        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: articles_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
+    else if (recipes_id && Array.isArray(recipes_id) && recipes_id.length > 0 && recipes_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != recipes_id.length) {
+        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: recipes_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
     }
-    else if (articles_id && !Array.isArray(articles_id)) {
+    else if (recipes_id && !Array.isArray(recipes_id)) {
         callback({ msg: "L'argument n'est pas un tableau.", type_error: 'no-valid' });
     }
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}
 
 module.exports.findOneRecipe = function (tab_field, value, options, callback) {
     var field_unique = ['name', 'description', 'price', 'quantity']
@@ -115,7 +115,7 @@ module.exports.findOneRecipe = function (tab_field, value, options, callback) {
             if (value){
                 callback(null, value.toObject())
             }else {
-                callback({msg: "Article non trouvé.", type_error: "no-found"})
+                callback({msg: "Recipe non trouvé.", type_error: "no-found"})
             }
         }).catch((err) => {
             callback({msg: "Error interne mongo", type_error:'error-mongo'})
@@ -141,7 +141,7 @@ module.exports.findOneRecipe = function (tab_field, value, options, callback) {
     }
 }
 
-/* module.exports.findManyArticles = function(search, limit, page, options, callback) {
+module.exports.findManyRecipes = function(search, limit, page, options, callback) {
     page = !page ? 1 : parseInt(page)
     limit = !limit ? 10 : parseInt(limit)
     var populate = options && options.populate ? ['user_id']: []
@@ -149,10 +149,10 @@ module.exports.findOneRecipe = function (tab_field, value, options, callback) {
         callback ({msg: `format de ${typeof page !== "number" ? "page" : "limit"} est incorrect`, type_error: "no-valid"})
     }else{
         let query_mongo = search ? {$or: _.map(["name", "description"], (e) => {return {[e]: {$regex: search}}})} : {}
-        Article.countDocuments(query_mongo).then((value) => {
+        Recipe.countDocuments(query_mongo).then((value) => {
             if (value > 0) {
                 const skip = ((page - 1) * limit)
-                Article.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
+                Recipe.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
                     callback(null, {
                         count: value,
                         results: results
@@ -165,7 +165,7 @@ module.exports.findOneRecipe = function (tab_field, value, options, callback) {
             callback(e)
         })
     }
-} */
+}
 
 module.exports.updateOneRecipe = function (recipe_id, update, options, callback) {
     update.updated_at = new Date()
@@ -176,7 +176,7 @@ module.exports.updateOneRecipe = function (recipe_id, update, options, callback)
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Article non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Recipe non trouvé.", type_error: "no-found" });
             } catch (e) {
                 callback(e)
             }
@@ -213,11 +213,11 @@ module.exports.updateOneRecipe = function (recipe_id, update, options, callback)
     }
 }
 
-/* module.exports.updateManyArticles = function (articles_id, update, options, callback) {
+module.exports.updateManyRecipes = function (recipes_id, update, options, callback) {
     // 
-    if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == articles_id.length) {
-        articles_id = articles_id.map((e) => { return new ObjectId(e) })
-        Article.updateMany({ _id: articles_id }, update, { runValidators: true }).then((value) => {
+    if (recipes_id && Array.isArray(recipes_id) && recipes_id.length > 0 && recipes_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == recipes_id.length) {
+        recipes_id = recipes_id.map((e) => { return new ObjectId(e) })
+        Recipe.updateMany({ _id: recipes_id }, update, { runValidators: true }).then((value) => {
             try {
                 // 
                 if(value && value.matchedCount != 0){
@@ -261,7 +261,7 @@ module.exports.updateOneRecipe = function (recipe_id, update, options, callback)
     else {
         callback({ msg: "Id invalide.", type_error: 'no-valid' })
     }
-} */
+}
 
 module.exports.deleteOneRecipe = function (recipe_id, options, callback) {
     if (recipe_id && mongoose.isValidObjectId(recipe_id)) {
@@ -270,7 +270,7 @@ module.exports.deleteOneRecipe = function (recipe_id, options, callback) {
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Article non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Recipe non trouvé.", type_error: "no-found" });
             }
             catch (e) {
                 
@@ -285,23 +285,23 @@ module.exports.deleteOneRecipe = function (recipe_id, options, callback) {
     }
 }
 
-/* module.exports.deleteManyArticles = function (articles_id, options, callback) {
-    if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == articles_id.length) {
-        articles_id = articles_id.map((e) => { return new ObjectId(e) })
-        Article.deleteMany({ _id: articles_id }).then((value) => {
+module.exports.deleteManyRecipes = function (recipes_id, options, callback) {
+    if (recipes_id && Array.isArray(recipes_id) && recipes_id.length > 0 && recipes_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == recipes_id.length) {
+        recipes_id = recipes_id.map((e) => { return new ObjectId(e) })
+        Recipe.deleteMany({ _id: recipes_id }).then((value) => {
             callback(null, value)
         }).catch((err) => {
             callback({ msg: "Erreur mongo suppression.", type_error: "error-mongo" });
         })
     }
-    else if (articles_id && Array.isArray(articles_id) && articles_id.length > 0 && articles_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != articles_id.length) {
-        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: articles_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
+    else if (recipes_id && Array.isArray(recipes_id) && recipes_id.length > 0 && recipes_id.filter((e) => { return mongoose.isValidObjectId(e) }).length != recipes_id.length) {
+        callback({ msg: "Tableau non conforme plusieurs éléments ne sont pas des ObjectId.", type_error: 'no-valid', fields: recipes_id.filter((e) => { return !mongoose.isValidObjectId(e) }) });
     }
-    else if (articles_id && !Array.isArray(articles_id)) {
+    else if (recipes_id && !Array.isArray(recipes_id)) {
         callback({ msg: "L'argement n'est pas un tableau.", type_error: 'no-valid' });
 
     }
     else {
         callback({ msg: "Tableau non conforme.", type_error: 'no-valid' });
     }
-} */
+}
