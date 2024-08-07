@@ -92,7 +92,7 @@ module.exports.findManyIngredientsById = function(req, res) {
             res.send(value)
         }
     })
-}>
+}
 
 // La fonction permet de chercher un ingrédient par les champs autorisé
 module.exports.findOneIngredient = function(req, res){

@@ -19,11 +19,9 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
-  "devDependencies": {
-    "mocha": "^10.7.0",
-    "scripts": {
-      "test": "mocha tests/index.js --timeout 5000 -s 0 --exit"
-    }
+ 
+  "scripts": {
+    "test": "mocha tests/index.js --timeout 5000 -s 0 --exit"
   }
+  
 }
-
