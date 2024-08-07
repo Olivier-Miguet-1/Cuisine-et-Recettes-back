@@ -30,6 +30,7 @@ const passport = require('passport');
  *       500:
  *         description: Internal server error.
  */
+
 // La fonction pour gerer l'authentification depuis passport
 module.exports.loginUser = function (req, res, next) {
     passport.authenticate('login', { badRequestMessage: "Les champs sont manquants." }, async function (err, user) {

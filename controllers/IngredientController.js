@@ -26,7 +26,7 @@ module.exports.addOneIngredient = function(req, res) {
     })
 }
 
-/* // La fonction permet d'ajouter plusieurs ingredients
+// La fonction permet d'ajouter plusieurs ingredients
 module.exports.addManyIngredient = function(req, res) {
     req.log.info("Création de plusieurs Ingredients")
     var options = {users: req.users}
@@ -39,7 +39,7 @@ module.exports.addManyIngredient = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de chercher un ingrédient
 module.exports.findOneIngredientById = function(req, res) {
@@ -66,7 +66,7 @@ module.exports.findOneIngredientById = function(req, res) {
     })
 }
 
-/* // La fonction permet de chercher plusieurs ingredients
+// La fonction permet de chercher plusieurs ingredients
 module.exports.findManyIngredientsById = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Recherche de plusieurs ingredients", req.query.id)
@@ -92,7 +92,7 @@ module.exports.findManyIngredientsById = function(req, res) {
             res.send(value)
         }
     })
-} */
+}>
 
 // La fonction permet de chercher un ingrédient par les champs autorisé
 module.exports.findOneIngredient = function(req, res){
@@ -122,7 +122,7 @@ module.exports.findOneIngredient = function(req, res){
     })
 }
 
-/* // La fonction permet de chercher plusieurs ingredients
+// La fonction permet de chercher plusieurs ingredients
 module.exports.findManyIngredients = function(req, res) {
     req.log.info("Recherche de plusieurs ingredients")
     let page = req.query.page
@@ -143,7 +143,7 @@ module.exports.findManyIngredients = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de modifier un ingrédient
 module.exports.updateOneIngredient = function(req, res) {
@@ -170,7 +170,7 @@ module.exports.updateOneIngredient = function(req, res) {
     })
 }
 
-/* // La fonction permet de modifier plusieurs ingredients
+// La fonction permet de modifier plusieurs ingredients
 module.exports.updateManyIngredients = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Modification de plusieurs ingredients")
@@ -195,7 +195,7 @@ module.exports.updateManyIngredients = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de supprimer un ingrédient
 module.exports.deleteOneIngredient = function(req, res) {
@@ -221,7 +221,7 @@ module.exports.deleteOneIngredient = function(req, res) {
     })
 }
 
-/* // La fonction permet de supprimer plusieurs ingredients
+// La fonction permet de supprimer plusieurs ingredients
 module.exports.deleteManyIngredients = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Suppression de plusieurs ingredients")
@@ -245,4 +245,4 @@ module.exports.deleteManyIngredients = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
