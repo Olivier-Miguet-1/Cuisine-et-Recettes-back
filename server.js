@@ -45,6 +45,8 @@ swaggerUi.setup(swaggerDocs));
 // Déclaration des controllers pour l'utilisateur
 const UserController = require('./controllers/UserController')
 const RecipeController = require('./controllers/RecipeController')
+const IngredientController = require('./controllers/IngredientController')
+const UtensilController = require('./controllers/UtensilController')
 
 // Déclaration des middlewares
 const DatabaseMiddleware = require('./middlewares/database')
