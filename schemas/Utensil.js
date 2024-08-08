@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const ObjectId = mongoose.Types.ObjectId
 
 
-var UserSchema = mongoose.Schema({
+var UtensilSchema = mongoose.Schema({
     _id: {
         type: ObjectId,
         required: true,
