@@ -48,7 +48,58 @@ module.exports.addOneRecipe = async function (recipe, options, callback) {
     }
 };
 
+module.exports.addManyRecipes = async function (recipes, options, callback) {
+    var errors = [];
 
+        // Vérifier les erreurs de validation
+    for (var i = 0; i < recipes.length; i++) {
+        var recipe = recipes[i];
+        var new_recipe = new Recipe(recipe);
+        var error = new_recipe.validateSync();
+        if (error) {
+            error = error['errors'];
+            var text = Object.keys(error).map((e) => {
+                return error[e]['properties']['message'];
+            }).join(' ');
+            var fields = _.transform(Object.keys(error), function (result, value) {
+                result[value] = error[value]['properties']['message'];
+            }, {});
+            errors.push({
+                msg: text,
+                fields_with_error: Object.keys(error),
+                fields: fields,
+                index: i,
+                type_error: "validator"
+            });
+        }
+    }
+    if (errors.length > 0) {
+        callback(errors);
+    } else {
+        try {
+            // Tenter d'insérer les utilisateurs
+            const data = await Recipe.insertMany(recipes, { ordered: false });
+            callback(null, data);
+        } catch (error) {
+            if (error.code === 11000) { // Erreur de duplicité
+                const duplicateErrors = error.writeErrors.map(err => {
+                    //const field = Object.keys(err.keyValue)[0];
+                    const field = err.err.errmsg.split(" dup key: { ")[1].split(':')[0].trim();
+                    return {
+                        msg: `Duplicate key error: ${field} must be unique.`,
+                        fields_with_error: [field],
+                        fields: { [field]: `The ${field} is already taken.` },
+                        index: err.index,
+                        type_error: "duplicate"
+                    };
+                });
+                callback(duplicateErrors);
+            } else {
+                callback(error); // Autres erreurs
+            }
+        }
+    }
+};
 
 module.exports.findOneRecipeById = function (recipe_id, options, callback) {
     var opts ={populate: options && options.populate ? ["user_id"] : []}

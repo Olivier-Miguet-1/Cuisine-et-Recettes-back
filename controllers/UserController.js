@@ -34,6 +34,7 @@ const passport = require('passport');
 // La fonction pour gerer l'authentification depuis passport
 module.exports.loginUser = function (req, res, next) {
     passport.authenticate('login', { badRequestMessage: "Les champs sont manquants." }, async function (err, user) {
+        //console.log(err, user)
         if (err) {
             res.statusCode = 401
             return res.send({msg: "Le nom d'utilisateur ou mot de passe n'est pas correct.", type_error: "no-valid-login"})
@@ -42,7 +43,7 @@ module.exports.loginUser = function (req, res, next) {
             req.logIn(user, async function (err) {
                 if (err) {
                     res.statusCode = 500
-                    return res.send({msg:"Probleme d'authnetification sur le serveur.", type_error: "internal"})
+                    return res.send({msg:"Probleme d'authentification sur le serveur.", type_error: "internal"})
                 }
                 else {
                     return res.send(user)
@@ -51,6 +52,29 @@ module.exports.loginUser = function (req, res, next) {
         }
     })(req, res, next)
 }
+
+module.exports.logoutUser = function (req, res) {
+    req.log.info("Déconnexion d'un utilisateur")
+    UserService.updateOneUser(req.user._id, {token: ""}, null, function(err, value) {
+        if (err && err.type_error == "no found") {
+            res.statusCode = 404
+            res.send(err)
+        }
+        else if (err && err.type_error == "validator") {
+            res.statusCode = 405
+            res.send(err)
+        }
+        else if (err && err.type_error == "duplicate") {
+            res.statusCode = 405
+            res.send(err)
+        }
+        else {
+            res.statusCode = 201
+            res.send({message : "L'utilisateur est déconnecté."})
+        }
+    })
+}
+
 
 /**
  * @swagger
@@ -85,6 +109,7 @@ module.exports.addOneUser = function (req, res) {
     LoggerHttp(req, res)
     req.log.info("Création d'un utilisateur")
     UserService.addOneUser(req.body, null, function (err, value) {
+       
         if (err && err.type_error == "no found") {
             res.statusCode = 404
             res.send(err)
@@ -108,6 +133,7 @@ module.exports.addOneUser = function (req, res) {
 module.exports.addManyUsers = function (req, res) {
     req.log.info("Création de plusieurs utilisateurs")
     UserService.addManyUsers(req.body, null, function (err, value) {
+     //   console.log(err, value)
         if (err) {
             res.statusCode = 405
             res.send(err)

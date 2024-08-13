@@ -26,7 +26,7 @@ module.exports.addOneRecipe = function(req, res) {
     })
 }
 
-/* // La fonction permet d'ajouter plusieurs recettes
+// La fonction permet d'ajouter plusieurs recettes
 module.exports.addManyRecipes = function(req, res) {
     req.log.info("Création de plusieurs Recipes")
     var options = {users: req.users}
@@ -39,7 +39,7 @@ module.exports.addManyRecipes = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de chercher une recette
 module.exports.findOneRecipeById = function(req, res) {
@@ -66,7 +66,7 @@ module.exports.findOneRecipeById = function(req, res) {
     })
 }
 
-/* // La fonction permet de chercher plusieurs recettes
+// La fonction permet de chercher plusieurs recettes
 module.exports.findManyRecipesById = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Recherche de plusieurs recettes", req.query.id)
@@ -92,7 +92,7 @@ module.exports.findManyRecipesById = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de chercher une recette par les champs autorisé
 module.exports.findOneRecipe = function(req, res){
@@ -122,7 +122,7 @@ module.exports.findOneRecipe = function(req, res){
     })
 }
 
-/* // La fonction permet de chercher plusieurs recettes
+// La fonction permet de chercher plusieurs recettes
 module.exports.findManyRecipes = function(req, res) {
     req.log.info("Recherche de plusieurs recettes")
     let page = req.query.page
@@ -143,7 +143,7 @@ module.exports.findManyRecipes = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de modifier une recette
 module.exports.updateOneRecipe = function(req, res) {
@@ -170,7 +170,7 @@ module.exports.updateOneRecipe = function(req, res) {
     })
 }
 
-/* // La fonction permet de modifier plusieurs recettes
+// La fonction permet de modifier plusieurs recettes
 module.exports.updateManyRecipes = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Modification de plusieurs recettes")
@@ -195,7 +195,7 @@ module.exports.updateManyRecipes = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de supprimer une recette
 module.exports.deleteOneRecipe = function(req, res) {
@@ -221,7 +221,7 @@ module.exports.deleteOneRecipe = function(req, res) {
     })
 }
 
-/* // La fonction permet de supprimer plusieurs recettes
+// La fonction permet de supprimer plusieurs recettes
 module.exports.deleteManyRecipes = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Suppression de plusieurs recettes")
@@ -245,4 +245,4 @@ module.exports.deleteManyRecipes = function(req, res) {
             res.send(value)
         }
     })
-} */
+}

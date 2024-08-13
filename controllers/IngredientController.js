@@ -6,7 +6,7 @@ module.exports.addOneIngredient = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Création d'un ingrédient")
     var options = {user: req.user}
-    IngredientService.addOneIngredient(req.body, options, null, function(err, value) {
+    IngredientService.addOneIngredient(req.body, options, function(err, value) {
         if (err && err.type_error == "no found") {
             res.statusCode = 404
             res.send(err)
@@ -27,10 +27,10 @@ module.exports.addOneIngredient = function(req, res) {
 }
 
 // La fonction permet d'ajouter plusieurs ingredients
-module.exports.addManyIngredient = function(req, res) {
+module.exports.addManyIngredients = function(req, res) {
     req.log.info("Création de plusieurs Ingredients")
     var options = {users: req.users}
-    IngredientService.addManyIngredient(req.body, options, null, function(err, value) {
+    IngredientService.addManyIngredients(req.body, options, null, function(err, value) {
         if (err) {
             res.statusCode = 405
             res.send(err)
@@ -224,7 +224,7 @@ module.exports.deleteOneIngredient = function(req, res) {
 // La fonction permet de supprimer plusieurs ingredients
 module.exports.deleteManyIngredients = function(req, res) {
     LoggerHttp(req, res)
-    req.log.info("Suppression de plusieurs ingredients")
+    req.log.info("Suppression de plusieurs ingrédients")
     var arg = req.query.id
     if (arg && !Array.isArray(arg))
         arg = [arg]

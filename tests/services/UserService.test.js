@@ -7,7 +7,7 @@ var tab_id_users = []
 var users = []
 
 describe("addOneUser", () => {
-    it("Utilisateur correct. - S", () => {
+    it("Utilisateur correct. - S", (done) => {
         var user = {
             firstName: "Edouard",
             lastName: "Dupont",
@@ -20,10 +20,11 @@ describe("addOneUser", () => {
             expect(value).to.haveOwnProperty('_id')
             id_user_valid = value._id
             users.push(value)
+            done()
             //
         })
     })
-    it("Utilisateur incorrect. (Sans firstName) - E", () => {
+    it("Utilisateur incorrect. (Sans firstName) - E", (done) => {
         var user_no_valid = {
             lastName: "Dupont",
             email: "edouard.dupont2@gmail.com",
@@ -36,7 +37,7 @@ describe("addOneUser", () => {
             expect(err).to.haveOwnProperty('fields')
             expect(err['fields']).to.haveOwnProperty('firstName')
             expect(err['fields']['firstName']).to.equal('Path `firstName` is required.')
-
+            done()
         })
     })
 })
@@ -99,6 +100,7 @@ describe("addManyUsers", () => {
         }]
 
         UserService.addManyUsers(users_tab, null, function (err, value) {
+       //     console.log(err, value)
             tab_id_users = _.map(value, '_id')
             users = [... value, ...users]
 

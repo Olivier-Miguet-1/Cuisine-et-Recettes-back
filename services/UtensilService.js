@@ -8,11 +8,12 @@ var Utensil = mongoose.model('Utensil', UtensilSchema)
 
 Utensil.createIndexes()
 
-module.exports.addOneUtensil = async function (Utensil, options, callback) {
+module.exports.addOneUtensil = async function (utensil, options, callback) {
     try {
-        Utensil.user_id = options && options.user ? options.user._id: Utensil.user_id
-        var new_Utensil = new Utensil(Utensil);
-        var errors = new_Utensil.validateSync();
+        // utensil.user_id = options && options.user ? options.user._id: utensil.user_id
+        var new_utensil = new Utensil(utensil);
+        var errors = new_utensil.validateSync();
+
         if (errors) {
             errors = errors['errors'];
             var text = Object.keys(errors).map((e) => {
@@ -29,8 +30,8 @@ module.exports.addOneUtensil = async function (Utensil, options, callback) {
             };
             callback(err);
         } else {
-            await new_Utensil.save();
-            callback(null, new_Utensil.toObject());
+            await new_utensil.save();
+            callback(null, new_utensil.toObject());
         }
     } catch (error) {
         if (error.code === 11000) { // Erreur de duplicité
@@ -48,10 +49,63 @@ module.exports.addOneUtensil = async function (Utensil, options, callback) {
     }
 };
 
-module.exports.findOneUtensilById = function (Utensil_id, options, callback) {
+module.exports.addManyUtensils = async function (utensils, options, callback) {
+    var errors = [];
+
+    // Vérifier les erreurs de validation
+    for (var i = 0; i < utensils.length; i++) {
+        var utensil = utensils[i];
+        var new_utensil = new Utensil(utensil);
+        var error = new_utensil.validateSync();
+        if (error) {
+            error = error['errors'];
+            var text = Object.keys(error).map((e) => {
+                return error[e]['properties']['message'];
+            }).join(' ');
+            var fields = _.transform(Object.keys(error), function (result, value) {
+                result[value] = error[value]['properties']['message'];
+            }, {});
+            errors.push({
+                msg: text,
+                fields_with_error: Object.keys(error),
+                fields: fields,
+                index: i,
+                type_error: "validator"
+            });
+        }
+    }
+    if (errors.length > 0) {
+        callback(errors);
+    } else {
+        try {
+            // Tenter d'insérer les utilisateurs
+            const data = await Utensil.insertMany(utensils, { ordered: false });
+            callback(null, data);
+        } catch (error) {
+            if (error.code === 11000) { // Erreur de duplicité
+                const duplicateErrors = error.writeErrors.map(err => {
+                    //const field = Object.keys(err.keyValue)[0];
+                    const field = err.err.errmsg.split(" dup key: { ")[1].split(':')[0].trim();
+                    return {
+                        msg: `Duplicate key error: ${field} must be unique.`,
+                        fields_with_error: [field],
+                        fields: { [field]: `The ${field} is already taken.` },
+                        index: err.index,
+                        type_error: "duplicate"
+                    };
+                });
+                callback(duplicateErrors);
+            } else {
+                callback(error); // Autres erreurs
+            }
+        }
+    }
+};
+
+module.exports.findOneUtensilById = function (utensil_id, options, callback) {
     var opts ={populate: options && options.populate ? ["user_id"] : []}
-    if (Utensil_id && mongoose.isValidObjectId(Utensil_id)) {
-        Utensil.findById(Utensil_id, null, opts).then((value) => {
+    if (utensil_id && mongoose.isValidObjectId(utensil_id)) {
+        Utensil.findById(utensil_id, null, opts).then((value) => {
             try {
                 if (value) {
                     callback(null, value.toObject());
@@ -113,7 +167,7 @@ module.exports.findOneUtensil = function (tab_field, value, options, callback) {
             if (value){
                 callback(null, value.toObject())
             }else {
-                callback({msg: "Utensil non trouvé.", type_error: "no-found"})
+                callback({msg: "Ustensile non trouvé.", type_error: "no-found"})
             }
         }).catch((err) => {
             callback({msg: "Error interne mongo", type_error:'error-mongo'})
@@ -165,10 +219,10 @@ module.exports.findManyUtensils = function(search, limit, page, options, callbac
     }
 }
 
-module.exports.updateOneUtensil = function (Utensil_id, update, options, callback) {
+module.exports.updateOneUtensil = function (utensil_id, update, options, callback) {
     update.updated_at = new Date()
-    if (Utensil_id && mongoose.isValidObjectId(Utensil_id)) {
-        Utensil.findByIdAndUpdate(new ObjectId(Utensil_id), update, { returnDocument: 'after', runValidators: true }).then((value) => {
+    if (utensil_id && mongoose.isValidObjectId(utensil_id)) {
+        Utensil.findByIdAndUpdate(new ObjectId(utensil_id), update, { returnDocument: 'after', runValidators: true }).then((value) => {
             try {
                 // callback(null, value.toObject())
                 if (value)
@@ -261,14 +315,14 @@ module.exports.updateManyUtensils = function (Utensils_id, update, options, call
     }
 }
 
-module.exports.deleteOneUtensil = function (Utensil_id, options, callback) {
-    if (Utensil_id && mongoose.isValidObjectId(Utensil_id)) {
-        Utensil.findByIdAndDelete(Utensil_id).then((value) => {
+module.exports.deleteOneUtensil = function (utensil_id, options, callback) {
+    if (utensil_id && mongoose.isValidObjectId(utensil_id)) {
+        Utensil.findByIdAndDelete(utensil_id).then((value) => {
             try {
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Utensil non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Ustensile non trouvé.", type_error: "no-found" });
             }
             catch (e) {
                 

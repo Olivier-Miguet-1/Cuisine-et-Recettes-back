@@ -4,10 +4,6 @@ const ObjectId = mongoose.Types.ObjectId
 const date = new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })
 
 var RecipeSchema = mongoose.Schema({
-    _id: {
-        type: ObjectId,
-        required: true,
-    },
     name: {
         type: String,
         required: true,
@@ -16,21 +12,21 @@ var RecipeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    ingredients: {
+    ingredients: [{
         type: ObjectId,
+        ref: "Ingredient",
         required: true,
-        min: [1]
-    },
+    }],
     userId: {
         type: ObjectId,
         ref: "User",
         required: true,
     },
-    utensils: {
+    utensils: [{
     type: ObjectId,
+    ref: "Utensil",
     required: true,
-    min: [1]
-    },
+    }],
     
 })
 

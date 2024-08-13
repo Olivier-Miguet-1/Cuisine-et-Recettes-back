@@ -8,11 +8,12 @@ var Ingredient = mongoose.model('Ingredient', IngredientSchema)
 
 Ingredient.createIndexes()
 
-module.exports.addOneIngredient = async function (Ingredient, options, callback) {
+module.exports.addOneIngredient = async function (ingredient, options, callback) {
     try {
-        Ingredient.user_id = options && options.user ? options.user._id: Ingredient.user_id
-        var new_ingredient = new Ingredient(Ingredient);
+       // ingredient.user_id = options && options.user ? options.user._id: ingredient.user_id
+        var new_ingredient = new Ingredient(ingredient);
         var errors = new_ingredient.validateSync();
+      
         if (errors) {
             errors = errors['errors'];
             var text = Object.keys(errors).map((e) => {
@@ -30,6 +31,7 @@ module.exports.addOneIngredient = async function (Ingredient, options, callback)
             callback(err);
         } else {
             await new_ingredient.save();
+           // console.log(new_ingredient)
             callback(null, new_ingredient.toObject());
         }
     } catch (error) {
@@ -48,9 +50,60 @@ module.exports.addOneIngredient = async function (Ingredient, options, callback)
     }
 };
 
+module.exports.addManyIngredients = async function (ingredients, options, callback) {
+    var errors = [];
 
+    // Vérifier les erreurs de validation
+    for (var i = 0; i < ingredients.length; i++) {
+        var ingredient = ingredients[i];
+        var new_ingredient = new Ingredient(ingredient);
+        var error = new_ingredient.validateSync();
+        if (error) {
+            error = error['errors'];
+            var text = Object.keys(error).map((e) => {
+                return error[e]['properties']['message'];
+            }).join(' ');
+            var fields = _.transform(Object.keys(error), function (result, value) {
+                result[value] = error[value]['properties']['message'];
+            }, {});
+            errors.push({
+                msg: text,
+                fields_with_error: Object.keys(error),
+                fields: fields,
+                index: i,
+                type_error: "validator"
+            });
+        }
+    }
+    if (errors.length > 0) {
+        callback(errors);
+    } else {
+        try {
+            // Tenter d'insérer les utilisateurs
+            const data = await Ingredient.insertMany(ingredients, { ordered: false });
+            callback(null, data);
+        } catch (error) {
+            if (error.code === 11000) { // Erreur de duplicité
+                const duplicateErrors = error.writeErrors.map(err => {
+                    //const field = Object.keys(err.keyValue)[0];
+                    const field = err.err.errmsg.split(" dup key: { ")[1].split(':')[0].trim();
+                    return {
+                        msg: `Duplicate key error: ${field} must be unique.`,
+                        fields_with_error: [field],
+                        fields: { [field]: `The ${field} is already taken.` },
+                        index: err.index,
+                        type_error: "duplicate"
+                    };
+                });
+                callback(duplicateErrors);
+            } else {
+                callback(error); // Autres erreurs
+            }
+        }
+    }
+};
 
-module.exports.findOneingredientById = function (ingredient_id, options, callback) {
+module.exports.findOneIngredientById = function (ingredient_id, options, callback) {
     var opts ={populate: options && options.populate ? ["user_id"] : []}
     if (ingredient_id && mongoose.isValidObjectId(ingredient_id)) {
         Ingredient.findById(ingredient_id, null, opts).then((value) => {
@@ -76,7 +129,7 @@ module.exports.findManyIngredientsById = function (Ingredients_id, options, call
     var opts = {populate: (options && options.populate ? ["user_id"] : []), lean: true}
     if (Ingredients_id && Array.isArray(Ingredients_id) && Ingredients_id.length > 0 && Ingredients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingredients_id.length) {
         Ingredients_id = Ingredients_id.map((e) => { return new ObjectId(e) })
-        Recipe.find({ _id: Ingredients_id }, null, opts).then((value) => {
+        Ingredient.find({ _id: Ingredients_id }, null, opts).then((value) => {
             try {
                 if (value && Array.isArray(value) && value.length != 0) {
                     callback(null, value);
@@ -102,7 +155,7 @@ module.exports.findManyIngredientsById = function (Ingredients_id, options, call
     }
 }
 
-module.exports.findOneingredient = function (tab_field, value, options, callback) {
+module.exports.findOneIngredient = function (tab_field, value, options, callback) {
     var field_unique = ['name', 'description', 'price', 'quantity']
     var opts = {populate: options && options.populate ? ["user_id"] : []}
 
@@ -149,10 +202,10 @@ module.exports.findManyIngredients = function(search, limit, page, options, call
         callback ({msg: `format de ${typeof page !== "number" ? "page" : "limit"} est incorrect`, type_error: "no-valid"})
     }else{
         let query_mongo = search ? {$or: _.map(["name", "description"], (e) => {return {[e]: {$regex: search}}})} : {}
-        Recipe.countDocuments(query_mongo).then((value) => {
+        Ingredient.countDocuments(query_mongo).then((value) => {
             if (value > 0) {
                 const skip = ((page - 1) * limit)
-                Recipe.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
+                Ingredient.find(query_mongo, null, {skip:skip, limit:limit, populate: populate, lean: true}).then((results) => {
                     callback(null, {
                         count: value,
                         results: results
@@ -167,7 +220,7 @@ module.exports.findManyIngredients = function(search, limit, page, options, call
     }
 }
 
-module.exports.updateOneingredient = function (ingredient_id, update, options, callback) {
+module.exports.updateOneIngredient = function (ingredient_id, update, options, callback) {
     update.updated_at = new Date()
     if (ingredient_id && mongoose.isValidObjectId(ingredient_id)) {
         Ingredient.findByIdAndUpdate(new ObjectId(ingredient_id), update, { returnDocument: 'after', runValidators: true }).then((value) => {
@@ -176,7 +229,7 @@ module.exports.updateOneingredient = function (ingredient_id, update, options, c
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Recipe non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Ingredient non trouvé.", type_error: "no-found" });
             } catch (e) {
                 callback(e)
             }
@@ -217,7 +270,7 @@ module.exports.updateManyIngredients = function (Ingredients_id, update, options
     // 
     if (Ingredients_id && Array.isArray(Ingredients_id) && Ingredients_id.length > 0 && Ingredients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingredients_id.length) {
         Ingredients_id = Ingredients_id.map((e) => { return new ObjectId(e) })
-        Recipe.updateMany({ _id: Ingredients_id }, update, { runValidators: true }).then((value) => {
+        Ingredient.updateMany({ _id: Ingredients_id }, update, { runValidators: true }).then((value) => {
             try {
                 // 
                 if(value && value.matchedCount != 0){
@@ -263,14 +316,14 @@ module.exports.updateManyIngredients = function (Ingredients_id, update, options
     }
 }
 
-module.exports.deleteOneingredient = function (ingredient_id, options, callback) {
+module.exports.deleteOneIngredient = function (ingredient_id, options, callback) {
     if (ingredient_id && mongoose.isValidObjectId(ingredient_id)) {
         Ingredient.findByIdAndDelete(ingredient_id).then((value) => {
             try {
                 if (value)
                     callback(null, value.toObject())
                 else
-                    callback({ msg: "Recipe non trouvé.", type_error: "no-found" });
+                    callback({ msg: "Ingredient non trouvé.", type_error: "no-found" });
             }
             catch (e) {
                 
@@ -288,7 +341,7 @@ module.exports.deleteOneingredient = function (ingredient_id, options, callback)
 module.exports.deleteManyIngredients = function (Ingredients_id, options, callback) {
     if (Ingredients_id && Array.isArray(Ingredients_id) && Ingredients_id.length > 0 && Ingredients_id.filter((e) => { return mongoose.isValidObjectId(e) }).length == Ingredients_id.length) {
         Ingredients_id = Ingredients_id.map((e) => { return new ObjectId(e) })
-        Recipe.deleteMany({ _id: Ingredients_id }).then((value) => {
+        Ingredient.deleteMany({ _id: Ingredients_id }).then((value) => {
             callback(null, value)
         }).catch((err) => {
             callback({ msg: "Erreur mongo suppression.", type_error: "error-mongo" });

@@ -81,9 +81,6 @@ describe("POST - /utensil", () => {
       .send({
         name: "Fouet",
         description: "ceci est une description",
-        price: 2,
-        quantity: 40,
-        user_id: rdm_user(tab_id_users),
       })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
@@ -98,26 +95,7 @@ describe("POST - /utensil", () => {
       .post("/utensil")
       .send({
         description: "ceci est une description",
-        price: 2,
-        quantity: 40,
-        user_id: rdm_user(tab_id_users),
-      })
-      .auth(token_login, { type: "bearer" })
-      .end((err, res) => {
-        expect(res).to.have.status(405);
-        done();
-      });
-  });
-  it("Ajouter un ustensile incorrect. (Avec une quantité < 0 ) - E", (done) => {
-    chai
-      .request(server)
-      .post("/utensil")
-      .send({
-        name: "Cuillère à soupe",
-        description: "ceci est une description",
-        price: 3,
-        quantity: -3,
-      })
+    })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
         expect(res).to.have.status(405);
@@ -131,9 +109,6 @@ describe("POST - /utensil", () => {
       .send({
         name: "",
         description: "ceci est une description",
-        price: 5,
-        quantity: 7,
-        user_id: rdm_user(tab_id_users),
       })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {

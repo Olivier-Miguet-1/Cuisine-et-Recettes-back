@@ -1,9 +1,7 @@
 const mongoose = require("mongoose")
-const ObjectId = mongoose.Types.ObjectId
-
 
 var UserSchema = mongoose.Schema({
-    userName: {
+    username: {
         type: String,
         index: true,
         unique: true,

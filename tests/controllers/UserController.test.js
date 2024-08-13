@@ -106,6 +106,7 @@ describe("POST - /users", () => {
             password:"123456"
             }
         ]).end((err, res) => {
+          //  console.log(res.body)
             users = [...users, ...res.body]
             // 
             expect(res).to.have.status(201)

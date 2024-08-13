@@ -6,7 +6,7 @@ module.exports.addOneUtensil = function(req, res) {
     LoggerHttp(req, res)
     req.log.info("Création d'un ustensile")
     var options = {user: req.user}
-    UtensilService.addOneUtensil(req.body, options, null, function(err, value) {
+    UtensilService.addOneUtensil(req.body, options, function(err, value) {
         if (err && err.type_error == "no found") {
             res.statusCode = 404
             res.send(err)
@@ -26,11 +26,11 @@ module.exports.addOneUtensil = function(req, res) {
     })
 }
 
-/* // La fonction permet d'ajouter plusieurs Utensils
-module.exports.addManyUtensil = function(req, res) {
-    req.log.info("Création de plusieurs Utensils")
+// La fonction permet d'ajouter plusieurs Ustensiles
+module.exports.addManyUtensils = function(req, res) {
+    req.log.info("Création de plusieurs Ustensiles")
     var options = {users: req.users}
-    UtensilService.addManyUtensil(req.body, options, null, function(err, value) {
+    UtensilService.addManyUtensils(req.body, options, null, function(err, value) {
         if (err) {
             res.statusCode = 405
             res.send(err)
@@ -39,11 +39,11 @@ module.exports.addManyUtensil = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de chercher un ustensile
 module.exports.findOneUtensilById = function(req, res) {
-    req.log.info("Recherche d'un Utensil par son id")
+    req.log.info("Recherche d'un Ustensile par son id")
     var opts = { populate: req.query.populate }
     UtensilService.findOneUtensilById(req.params.id, opts, function(err, value) {       
 
@@ -66,10 +66,10 @@ module.exports.findOneUtensilById = function(req, res) {
     })
 }
 
-/* // La fonction permet de chercher plusieurs Utensils
+// La fonction permet de chercher plusieurs Utensils
 module.exports.findManyUtensilsById = function(req, res) {
     LoggerHttp(req, res)
-    req.log.info("Recherche de plusieurs Utensils", req.query.id)
+    req.log.info("Recherche de plusieurs Ustensiles", req.query.id)
     var arg = req.query.id
     if (arg && !Array.isArray(arg))
         arg=[arg]
@@ -92,7 +92,7 @@ module.exports.findManyUtensilsById = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de chercher un ustensile par les champs autorisé
 module.exports.findOneUtensil = function(req, res){
@@ -122,9 +122,9 @@ module.exports.findOneUtensil = function(req, res){
     })
 }
 
-/* // La fonction permet de chercher plusieurs Utensils
+// La fonction permet de chercher plusieurs Ustensiles
 module.exports.findManyUtensils = function(req, res) {
-    req.log.info("Recherche de plusieurs Utensils")
+    req.log.info("Recherche de plusieurs Ustensiles")
     let page = req.query.page
     let pageSize = req.query.pageSize
     let searchValue = req.query.q
@@ -143,7 +143,7 @@ module.exports.findManyUtensils = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de modifier un ustensile
 module.exports.updateOneUtensil = function(req, res) {
@@ -170,10 +170,10 @@ module.exports.updateOneUtensil = function(req, res) {
     })
 }
 
-/* // La fonction permet de modifier plusieurs Utensils
+// La fonction permet de modifier plusieurs Ustensiles
 module.exports.updateManyUtensils = function(req, res) {
     LoggerHttp(req, res)
-    req.log.info("Modification de plusieurs Utensils")
+    req.log.info("Modification de plusieurs Ustensiles")
     var arg = req.query.id
     if (arg && !Array.isArray(arg))
         arg = [arg]
@@ -195,7 +195,7 @@ module.exports.updateManyUtensils = function(req, res) {
             res.send(value)
         }
     })
-} */
+}
 
 // La fonction permet de supprimer un ustensile
 module.exports.deleteOneUtensil = function(req, res) {
@@ -221,10 +221,10 @@ module.exports.deleteOneUtensil = function(req, res) {
     })
 }
 
-/* // La fonction permet de supprimer plusieurs Utensils
+// La fonction permet de supprimer plusieurs Ustensiles
 module.exports.deleteManyUtensils = function(req, res) {
     LoggerHttp(req, res)
-    req.log.info("Suppression de plusieurs Utensils")
+    req.log.info("Suppression de plusieurs Ustensiles")
     var arg = req.query.id
     if (arg && !Array.isArray(arg))
         arg = [arg]
@@ -245,4 +245,4 @@ module.exports.deleteManyUtensils = function(req, res) {
             res.send(value)
         }
     })
-} */
+}

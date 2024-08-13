@@ -81,12 +81,10 @@ describe("POST - /ingredient", () => {
       .send({
         name: "crêpes",
         description: "ceci est une description",
-        price: 2,
-        quantity: 40,
-        user_id: rdm_user(tab_id_users),
       })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
+      //  console.log(res.body)
         expect(res).to.have.status(201);
         ingredients.push(res.body);
         done();
@@ -98,26 +96,7 @@ describe("POST - /ingredient", () => {
       .post("/ingredient")
       .send({
         description: "ceci est une description",
-        price: 2,
-        quantity: 40,
-        user_id: rdm_user(tab_id_users),
-      })
-      .auth(token_login, { type: "bearer" })
-      .end((err, res) => {
-        expect(res).to.have.status(405);
-        done();
-      });
-  });
-  it("Ajouter un ingrédient incorrect. (Avec une quantité < 0 ) - E", (done) => {
-    chai
-      .request(server)
-      .post("/ingredient")
-      .send({
-        name: "Kouign",
-        description: "ceci est une description",
-        price: 3,
-        quantity: -3,
-      })
+    })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
         expect(res).to.have.status(405);
@@ -131,9 +110,6 @@ describe("POST - /ingredient", () => {
       .send({
         name: "",
         description: "ceci est une description",
-        price: 5,
-        quantity: 7,
-        user_id: rdm_user(tab_id_users),
       })
       .auth(token_login, { type: "bearer" })
       .end((err, res) => {
